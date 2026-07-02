@@ -10,11 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field';
 import { loginSchema, type LoginFormValues } from '../schemas/authSchema';
 
+import useLogin  from "../hooks/useLogin";
+
 function LoginForm() {
 
   const form = useForm<LoginFormValues>({
       resolver: zodResolver(loginSchema),
-
+    
       defaultValues: {
         email: '',
         password: '',
@@ -22,8 +24,11 @@ function LoginForm() {
 
   });
 
+  const { mutate: login, isPending, isError, error } = useLogin();
+
   function onSubmit(values: LoginFormValues) {
       console.log(values);
+      login(values);
     
   }
 
@@ -63,9 +68,17 @@ function LoginForm() {
               }   
             />
           </FieldGroup>
+
+          {
+            isError && (
+              <p className="mt-2 text-sm text-red-500">
+                Login Faield. Please try again.
+              </p>
+            )
+          }
           
-          <Button type="submit" className="w-full mt-4">
-            Login
+          <Button type="submit" className="w-full mt-4" disabled={isPending}>
+            { isPending ? "Processing..." : "Login"}
           </Button>
       </form>
     </div>

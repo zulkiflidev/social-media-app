@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field';
 import { registerSchema, type RegisterFormValues } from '../schemas/authSchema';
 
+import useRegister  from "../hooks/useRegister";
+
 
 function RegisterForm() {
   
@@ -23,8 +25,11 @@ function RegisterForm() {
       }, 
   });
 
+  const { mutate: register, isPending, isError, error } = useRegister();
+
   function onSubmit(values: RegisterFormValues) {
-      console.log(values);    
+      console.log(values);  
+      register(values);  
   }
 
 
@@ -78,9 +83,17 @@ function RegisterForm() {
               }   
             />
           </FieldGroup>
+          
+          {
+            isError && (
+              <p className="mt-2 text-sm text-red-500">
+                Registration Faield. Please try again.
+              </p>
+            )
+          }
 
-          <Button type="submit" className="w-full mt-4">
-            Register
+          <Button type="submit" className="w-full mt-4" disabled={isPending}>
+            { isPending ? "Processing..." : "Register"}
           </Button>
       </form>
     </div>
