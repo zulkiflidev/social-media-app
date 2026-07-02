@@ -6,6 +6,11 @@ import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { makeStore, type AppStore } from "@/lib/redux/store";
 
+import SessionInitializer from "@/features/auth/components/SessionInitializer";
+
+
+
+
 function Providers({ children }: { children: React.ReactNode }){
 
     const storeRef = useRef<AppStore | null>(null);
@@ -22,7 +27,7 @@ function Providers({ children }: { children: React.ReactNode }){
 
         <Provider store={ storeRef.current }>
             <QueryClientProvider client={ queryClientRef.current }>
-
+                <SessionInitializer />
                 {children}
 
             </QueryClientProvider>

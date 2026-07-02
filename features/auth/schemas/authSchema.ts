@@ -16,6 +16,11 @@ const loginSchema = z.object({
 
 const registerSchema = z.object({
 
+    name: z.string().min(3, {
+        message: "Name must be at least 3 characters long"
+
+    }),
+
     username: z.string().min(3, {
         message: "Username must be at least 3 characters long"
 

@@ -19,6 +19,7 @@ function RegisterForm() {
       resolver: zodResolver(registerSchema),
 
       defaultValues: {
+        name: "",
         username: "",
         email: '',
         password: '',
@@ -39,6 +40,21 @@ function RegisterForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
 
         <FieldGroup>
+            <Controller name='name' control={form.control} render={
+                (
+                  { field, fieldState}
+                ) =>(
+                    <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
+                        <Input {...field} id={field.name} 
+                              type="text" aria-invalid={fieldState.invalid}
+                              placeholder="John Doe" />
+                        { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                )
+              }    
+            /> 
+
             <Controller name='username' control={form.control} render={
                 (
                   { field, fieldState}
