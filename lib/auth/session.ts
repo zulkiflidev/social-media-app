@@ -4,17 +4,17 @@ const TOKEN_KEY = "sociality_token";
 const USER_KEY = "sociality_user";
 
 
-function saveSession(token: string, user: User) {
+export function saveSession(token: string, user: User) {
 
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));    
 }
 
-function getToken(): string | null {
+export function getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
 }
 
-function getUser(): User | null {
+export function getUser(): User | null {
     const raw = localStorage.getItem(USER_KEY);
     if (!raw) return null;
 
@@ -27,7 +27,7 @@ function getUser(): User | null {
 }
 
 
-function clearSession() {
+export function clearSession() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
 }
