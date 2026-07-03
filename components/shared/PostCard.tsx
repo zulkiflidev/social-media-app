@@ -20,7 +20,7 @@ function PostCard({ post}: {  post: Post}) {
     function handleLikeClick(){
         toggleLike( {
             postId: post.id, 
-            isCurrentlyLiked: post.likeByMe
+            isCurrentlyLiked: post.likedByMe
         });
     }
 
@@ -41,7 +41,12 @@ function PostCard({ post}: {  post: Post}) {
 
                     { post.author.avatarUrl && (
 
-                        <Image src={post.author.avatarUrl} alt={post.author.username} fill className="object-cover" />
+                        <Image 
+                            src={post.author.avatarUrl} 
+                            alt={post.author.username} 
+                            fill
+                            sizes="32px"
+                            className="object-cover" />
 
                     )}
                 </div>
@@ -54,7 +59,17 @@ function PostCard({ post}: {  post: Post}) {
                         {dayjs(post.createdAt).fromNow()}
                     </p>
                 </div>
+            </div>
 
+            <div className="relative w-full aspect-square bg-muted">
+
+                <Image 
+                    src={ post.imageUrl }
+                    alt={ post.caption }
+                    fill
+                    sizes="(max-width: 640px) 100vw, 512px"
+                    className="object-cover"
+                />
 
             </div>
 
@@ -63,11 +78,11 @@ function PostCard({ post}: {  post: Post}) {
                 <div className="flex items-center gap-4 text-sm">
                     {/* <span>{post.likeCount} like</span> */}
                     <Button onClick={handleLikeClick} disabled={isPending}
-                            className={post.likeByMe 
+                            className={post.likedByMe 
                             ?
                             "text-red-500 font-medium" :
                             "text-foreground"}>
-                        {post.likeByMe ? "♥" : "♡"} 
+                        {post.likedByMe ? "♥" : "♡"} 
                         {post.likeCount} like
                     
                     </Button>

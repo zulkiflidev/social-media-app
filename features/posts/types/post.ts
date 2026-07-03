@@ -14,7 +14,7 @@ export  interface Post {
     author: PostAuthor;
     likeCount: number;
     commentCount: number;
-    likeByMe: boolean;
+    likedByMe: boolean;
     savedByMe?: boolean;
 
 }
