@@ -7,7 +7,7 @@ import type { CommentsResponse } from "@/features/comments/types/comments";
 function useComments(postId: number) {
 
 
-    return({
+    return useInfiniteQuery({
         queryKey: ["comments", postId],
         queryFn: async ({ pageParam }:  { pageParam: number }) => {
 

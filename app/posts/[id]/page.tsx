@@ -3,9 +3,14 @@
 import AuthGuard from "@/components/shared/AuthGuard";
 import PostCard from "@/components/shared/PostCard";
 import usePost from "@/features/posts/hooks/usePost";
-
 import { useParams } from "next/navigation";
 
+import { useState, type FormEvent } from "react";
+import useComments from "@/features/comments/hooks/useComments";
+import useCreateComment from "@/features/comments/hooks/useCreateComment";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 
 function PostDetailPage() {
@@ -23,8 +28,24 @@ function PostDetailContent() {
 
     const params = useParams<{   id: string }>();
     const postId = Number(params.id);
-
     const { data: post, isLoading, isError} = usePost(postId);
+
+    const { data: commentsData, isLoading: commentsLoading } = useComments(postId);
+    const { mutate: createComment, isPending: isCommenting } = useCreateComment();
+    
+    const [commentText, setCommentText] = useState('');
+    const comments = commentsData?.pages.flatMap( (page) => page.comments) ?? [];
+
+    function handleSubmitComment( e: FormEvent) {
+        e.preventDefault();
+
+        if (!commentText.trim()) return;
+
+        createComment(
+            { postId, text: commentText },
+            { onSuccess: () => setCommentText('')}
+        );
+    }
 
     if (isLoading) {
         return <div className="p-4 text-center">Loading...</div>;
@@ -43,7 +64,50 @@ function PostDetailContent() {
 
             <PostCard post={post} />
 
-            {/* Komen nanti saja dikerjakannnya...... */}
+            <div className="space-y-3">
+                <h2 className="font-medium text-sm">Comments</h2>
+                
+                <form onSubmit={handleSubmitComment} className="flex gap-2">
+
+                    <Input 
+                        value={commentText}
+                        onChange={ (e) => setCommentText(e.target.value)}
+                        placeholder = "Write any comment..."
+                        disabled={isCommenting}
+                    />
+
+                    <Button type="submit" disabled={isCommenting || !commentText.trim()}>
+                        {/* {isCommenting ? 'Commenting...' : 'Comment'} */}
+
+                        Send
+
+                    </Button>
+
+
+                </form>
+
+
+                {
+                    commentsLoading && <p className="text-sm text-muted-foreground">Loading...</p>
+
+                }
+
+
+                {
+                    comments.map(
+                        (comment) =>(
+                            <div key={comment.id} className="flex gap-3">
+                                <span className="font-medium">{comment.author.username}</span>{" "}
+                                {comment.text}
+                            </div>
+                        
+                        )
+                    )
+                }
+
+            </div>
+
+
         </div>
     );
 

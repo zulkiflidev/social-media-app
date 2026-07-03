@@ -4,12 +4,12 @@ import type { PaginationMeta } from "@/features/posts/types/post";
 export interface Comment {
 
     id: number;
-    content: string;
+    text: string;
     createdAt: string;
     author: PostAuthor;
 }
 
 export interface CommentsResponse {
-    items: Comment[];
+    comments: Comment[];
     pagination: PaginationMeta;
 }
