@@ -1,16 +1,15 @@
 "use client";
 
 import Image from "next/image";
-
 import Link from "next/link";
 import dayjs from "dayjs";
 
 import relativeTime from "dayjs/plugin/relativeTime";
 import type { Post } from "@/features/posts/types/post";
-
 import useToggleLike from "@/features/likes/hooks/useToggleLike";
-
 import { Button } from "@/components/ui/button";
+
+import useToggleSave from "@/features/saves/hooks/useToggleSave";
 
 
 dayjs.extend(relativeTime);
@@ -18,11 +17,18 @@ dayjs.extend(relativeTime);
 function PostCard({ post}: {  post: Post}) {
 
     const { mutate: toggleLike, isPending } = useToggleLike();
-
     function handleLikeClick(){
         toggleLike( {
             postId: post.id, 
             isCurrentlyLiked: post.likeByMe
+        });
+    }
+
+    const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
+    function handleSaveClick() {
+        toggleSave({
+            postId: post.id,
+            isCurrentlySaved: post.savedByMe ?? false
         });
     }
 
@@ -65,13 +71,25 @@ function PostCard({ post}: {  post: Post}) {
                         {post.likeCount} like
                     
                     </Button>
-                    
+                                        
                     <Link href={`/posts/${post.id}`} className="text-muted-foreground">
                         {post.commentCount} comments
                     </Link>
-                
 
+                    <Button onClick={handleSaveClick} disabled={isSaveSaving}
+                            className={post.savedByMe 
+                            ?
+                            "text-red-500 font-medium ml-auto" : "text-foreground ml-auto"
+                            }
+                    >
+                        {post.savedByMe ? "🔖" : "📑"}
+
+                    </Button>
+                
                 </div>
+
+
+
                 <p className="text-sm">
                 <span className="font-medium">{post.author.username}</span>{" "}
                 {post.caption}
