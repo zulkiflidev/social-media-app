@@ -15,6 +15,8 @@ export  interface Post {
     likeCount: number;
     commentCount: number;
     likeByMe: boolean;
+    saveByMe?: boolean;
+
 }
 
 export  interface PaginationMeta {
