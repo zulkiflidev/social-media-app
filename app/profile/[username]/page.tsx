@@ -69,6 +69,21 @@ function ProfilePage() {
 
                 </div> */}
 
+                <div className="flex gap-6 text-sm">
+                
+                    <span><strong>{profile.counts.posts}</strong> posts</span>
+                
+                    <Link href={`/profile/${profile.username}/followers`}>
+                        <strong>{profile.counts.followers}</strong> followers
+                    </Link>
+                
+                    <Link href={`/profile/${profile.username}/following`}>
+                        <strong>{profile.counts.following}</strong> following
+                    </Link>
+                
+                
+                </div>
+
 
                 {
                     !profile.isMe && (
