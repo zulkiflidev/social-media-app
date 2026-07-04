@@ -1,14 +1,28 @@
 export interface PublicProfile {
 
     id: number;
-    username: string;
     name: string;
-    avatarUrl: string | null;
+    username: string;
     bio: string | null;
-    postsCount: number;
-    followersCount: number;
-    followingCount: number;
-    isFollowedByMe: boolean;
+    avatarUrl: string | null;
+    
+    email: string;
+    phone: string;
+
+    counts: {
+        posts: number;
+        followers: number;
+        following: number;
+        likes: number;
+    }
+
+    isFollowing: boolean;
+    isMe: boolean;
+    
+    // postsCount: number;
+    // followersCount: number;
+    // followingCount: number;
+    // isFollowedByMe: boolean;
 
 
 }

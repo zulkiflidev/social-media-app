@@ -1,10 +1,13 @@
 "use client";
 
-
 import { useParams } from "next/navigation";
 import Image from "next/image";
 
 import usePublicProfile from "@/features/users/hooks/usePublicProfile";
+
+import useToggleFollow from "@/features/follow/hooks/useToggleFollow";
+import { Button } from "@/components/ui/button";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 function ProfilePage() {
 
@@ -17,6 +20,17 @@ function ProfilePage() {
 
     if (isError || !profile ){
         return <div>Profile not found!</div>;
+    }
+
+
+
+    const currentUser = useAppSelector((state) => state.auth.user);
+    const { mutate: toggleFollow, isPending } = useToggleFollow();
+
+    function handleFollowClick() {
+        if (!profile) return;
+            // toggleFollow({ username: profile.username, isCurrentlyFollowed: profile.isFollowedByMe });
+            toggleFollow({ username: profile.username, isCurrentlyFollowed: profile.isFollowing });
     }
 
     return (
@@ -41,16 +55,39 @@ function ProfilePage() {
                     <p className="text-sm text-muted-foreground">{profile.name}</p>
                 </div>
 
-                <div className="flex gap-6 text-sm">
+                {/* <div className="flex gap-6 text-sm">
                    <span><strong>{profile.postsCount}</strong> posts</span>
                    <span><strong>{profile.followersCount}</strong> followers</span>
                    <span><strong>{profile.followingCount}</strong> following</span>
 
+                </div> */}
 
-                </div>
+
+                {
+                    !profile.isMe && (
+                            <Button onClick={handleFollowClick} disabled={isPending}>
+                                {profile.isFollowing ? "Unfollow" : "Follow"}
+                            </Button>
+                        )
+                }
+
 
                 {
                     profile.bio &&  <p className="text-sm">{profile.bio}</p>
+                }
+
+                {
+                    currentUser && currentUser.username !== profile.username && (
+                        <Button onClick={handleFollowClick} disabled={isPending}>
+                            {/* {profile.isFollowedByMe ? "Unfollow" : "Follow"} */}
+
+                            { 
+
+                                profile.isFollowing ? "Unfollow" : "Follow"
+                            }
+                        </Button>
+                    
+                    )
                 }
 
             </div>
