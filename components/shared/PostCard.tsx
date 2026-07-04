@@ -1,0 +1,125 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import dayjs from "dayjs";
+
+import relativeTime from "dayjs/plugin/relativeTime";
+import type { Post } from "@/features/posts/types/post";
+import useToggleLike from "@/features/likes/hooks/useToggleLike";
+import { Button } from "@/components/ui/button";
+
+import useToggleSave from "@/features/saves/hooks/useToggleSave";
+
+
+dayjs.extend(relativeTime);
+
+function PostCard({ post}: {  post: Post}) {
+
+    const { mutate: toggleLike, isPending } = useToggleLike();
+    function handleLikeClick(){
+        toggleLike( {
+            postId: post.id, 
+            isCurrentlyLiked: post.likedByMe
+        });
+    }
+
+    const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
+    function handleSaveClick() {
+        toggleSave({
+            postId: post.id,
+            isCurrentlySaved: post.savedByMe ?? false
+        });
+    }
+
+
+    return(
+        <div className="border rounded-lg overflow-hidden">
+            <div className="flex items-center gap-3 p-3">
+                <div className="w-8 h-8 rounded-full 
+                                bg-muted overflow-hidden relative">
+
+                    { post.author.avatarUrl && (
+
+                        <Image 
+                            src={post.author.avatarUrl} 
+                            alt={post.author.username} 
+                            fill
+                            sizes="32px"
+                            className="object-cover" />
+
+                    )}
+                </div>
+                
+                <div >
+                    <Link href={`/users/${post.author.username}`} className="text-sm font-medium">
+                        {post.author.username}
+                    </Link>
+                    <p className="text-xs text-muted-foreground">
+                        {dayjs(post.createdAt).fromNow()}
+                    </p>
+                </div>
+            </div>
+
+            <div className="relative w-full aspect-square bg-muted">
+
+                <Image 
+                    src={ post.imageUrl }
+                    alt={ post.caption }
+                    fill
+                    sizes="(max-width: 640px) 100vw, 512px"
+                    className="object-cover"
+                />
+
+            </div>
+
+            <div className="p3 space=y-2">
+
+                <div className="flex items-center gap-4 text-sm">
+                    {/* <span>{post.likeCount} like</span> */}
+                    <Button onClick={handleLikeClick} disabled={isPending}
+                            className={post.likedByMe 
+                            ?
+                            "text-red-500 font-medium" :
+                            "text-foreground"}>
+                        {post.likedByMe ? "♥" : "♡"} 
+                        {post.likeCount} like
+                    
+                    </Button>
+                                        
+                    <Link href={`/posts/${post.id}`} className="text-muted-foreground">
+                        {post.commentCount} comments
+                    </Link>
+
+                    <Button onClick={handleSaveClick} disabled={isSaveSaving}
+                            className={post.savedByMe 
+                            ?
+                            "text-red-500 font-medium ml-auto" : "text-foreground ml-auto"
+                            }
+                    >
+                        {post.savedByMe ? "🔖" : "📑"}
+
+                    </Button>
+                
+                </div>
+
+
+
+                <p className="text-sm">
+                <span className="font-medium">{post.author.username}</span>{" "}
+                {post.caption}
+
+                </p>
+
+
+            </div>
+            
+
+
+
+
+        </div>
+    )
+}
+
+export default PostCard;

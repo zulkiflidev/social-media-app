@@ -2,9 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api/axios";
 import type { LoginFormValues } from "../schemas/authSchema";
 
-
-
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { saveSession } from '@/lib/auth/session';
 import { useAppDispatch } from '@/lib/redux/hooks';
 import { setCredentials } from '@/lib/redux/slices/authSlice';
@@ -14,8 +12,8 @@ function useLogin() {
 
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const searchParams = useSearchParams();
 
- 
 
     return useMutation({
         mutationFn: async (data: LoginFormValues) => {
@@ -29,7 +27,8 @@ function useLogin() {
                 token: data.token,
                 user: data.user
             }));
-            router.push("/feed")
+            const returnTo = searchParams.get("returnTo");
+            router.push(returnTo || "/feed");
             
         }
 
