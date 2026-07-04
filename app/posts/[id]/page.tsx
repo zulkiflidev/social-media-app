@@ -12,6 +12,10 @@ import useCreateComment from "@/features/comments/hooks/useCreateComment";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import useDeleteComment from "@/features/comments/hooks/useDeleteComment";
+import { useAppSelector } from "@/lib/redux/hooks";
+
+
 
 function PostDetailPage() {
 
@@ -57,6 +61,19 @@ function PostDetailContent() {
     }
 
 
+    const { mutate: deleteComment } = useDeleteComment();
+    const currentUser = useAppSelector(
+        (state) => state.auth.user);
+    
+    function handleDeleteComment(commentId: number) {
+
+        deleteComment({
+            commentId, postId
+        });
+
+    }
+
+
     return(
 
         <div className="max-w-lg mx-auto p-4 space-y-4">
@@ -93,17 +110,53 @@ function PostDetailContent() {
                 }
 
 
+                {/* 
+                    {
+                        comments.map(
+                            (comment) =>(
+                                <div key={comment.id} className="flex gap-3">
+                                    <span className="font-medium">{comment.author.username}</span>{" "}
+                                    {comment.text}
+                                </div>
+                            
+                            )
+                        )
+                    } 
+                 */}
+
+
                 {
                     comments.map(
-                        (comment) =>(
-                            <div key={comment.id} className="flex gap-3">
-                                <span className="font-medium">{comment.author.username}</span>{" "}
-                                {comment.text}
+                        (comment) => (
+
+                            <div key={comment.id} className="flex items-center justify-between gap-4">
+
+                                <p className="text-sm">
+                                    <span className="font-medium">
+                                        {comment.author.username}
+
+                                    </span>{" "}
+                                    {comment.text}
+
+                                </p>
+
+                                { currentUser?.id === comment.author.id && (
+
+                                    <Button variant="ghost" size="sm" onClick={() => handleDeleteComment(comment.id)}>
+                                        Delete
+                                    </Button>
+
+                                )}
+
                             </div>
-                        
+
+
+
+
                         )
                     )
                 }
+
 
             </div>
 
