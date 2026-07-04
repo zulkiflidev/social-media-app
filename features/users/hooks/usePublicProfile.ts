@@ -9,10 +9,10 @@ function usePublicProfile(username: string){
 
     return useQuery({
 
-        queryKey: ['public-profile', username],
+        queryKey: ['profile', username],
         queryFn: async () => {
 
-            const response = await api.get<{ data: PublicProfile }>(`/users/${username}/profile`);
+            const response = await api.get<{ data: PublicProfile }>(`/users/${username}`);
             return response.data.data;
 
         },

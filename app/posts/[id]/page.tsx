@@ -40,6 +40,20 @@ function PostDetailContent() {
     const [commentText, setCommentText] = useState('');
     const comments = commentsData?.pages.flatMap( (page) => page.comments) ?? [];
 
+
+    const { mutate: deleteComment } = useDeleteComment();
+    const currentUser = useAppSelector(
+        (state) => state.auth.user);
+    
+    function handleDeleteComment(commentId: number) {
+
+        deleteComment({
+            commentId, postId
+        });
+
+    }
+
+
     function handleSubmitComment( e: FormEvent) {
         e.preventDefault();
 
@@ -61,17 +75,6 @@ function PostDetailContent() {
     }
 
 
-    const { mutate: deleteComment } = useDeleteComment();
-    const currentUser = useAppSelector(
-        (state) => state.auth.user);
-    
-    function handleDeleteComment(commentId: number) {
-
-        deleteComment({
-            commentId, postId
-        });
-
-    }
 
 
     return(
