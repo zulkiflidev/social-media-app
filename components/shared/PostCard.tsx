@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import useToggleSave from "@/features/saves/hooks/useToggleSave";
 
 
+import useDeletePost from "@/features/posts/hooks/useDeletePost";
+import { useAppSelector } from "@/lib/redux/hooks";
+
 dayjs.extend(relativeTime);
 
 function PostCard({ post}: {  post: Post}) {
@@ -30,6 +33,15 @@ function PostCard({ post}: {  post: Post}) {
             postId: post.id,
             isCurrentlySaved: post.savedByMe ?? false
         });
+    }
+
+    const currentUser = useAppSelector((state) => state.auth.user);
+    const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
+
+    function handleDeleteClick() {
+        if (confirm("Yakin ingin menghapus post ini?")) {
+            deletePost(post.id);
+        }
     }
 
 
@@ -110,6 +122,14 @@ function PostCard({ post}: {  post: Post}) {
                 {post.caption}
 
                 </p>
+
+                {
+                    currentUser?.id === post.author.id && (
+                        <Button variant="ghost" size="sm" onClick={ handleDeleteClick } disabled={isDeleting}>
+                            Hapus
+                        </Button>
+                    )
+                }                
 
 
             </div>

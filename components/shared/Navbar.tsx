@@ -37,9 +37,14 @@ function Navbar(){
                 <Link href="/feed" className="text-sm">
                     Feed
                 </Link>
+
                 <Link href="/users/search" className="text-sm">
                     Search
                 </Link>
+
+                <Link href="/posts/create" className="text-sm">
+                    + Post
+                </Link>                
             </div>
 
 
@@ -54,6 +59,7 @@ function Navbar(){
                             Logout
                         </Button>
                     </div>
+                    
                 ) : (
 
                     <div className="flex items-center gap-4">
