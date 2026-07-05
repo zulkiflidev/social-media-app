@@ -10,21 +10,30 @@ function AuthGuard({children}: {
 
     const router = useRouter();
     const pathname = usePathname();
-    const isAuthenticated = useAppSelector(
-        (state) => state.auth.isAuthenticated
-    );
+    
+    // const {isAuthenticated = useAppSelector(
+    //     (state) => state.auth.isAuthenticated
+    // )
+
+    const { isAuthenticated, isInitialized } = useAppSelector((state) => state.auth);
+
 
 
     useEffect(
         () => {
 
-            if (!isAuthenticated){
+            if ( isInitialized && !isAuthenticated){
                 router.push(`/login?returnTo=${encodeURIComponent(pathname)}`);
             }
         }, [isAuthenticated, pathname, router]
 
     );
 
+
+    if (!isInitialized) {
+        return <div className="p-4 text-center">Loading...</div>
+    }
+    
     if (!isAuthenticated) {
         return null;
     }

@@ -13,12 +13,14 @@ interface AuthState {
     isAuthenticated: boolean;
     user: User | null;
     token: string | null;
+    isInitialized: boolean;
 }
 
 const initialState: AuthState = {
     isAuthenticated: false,
     user: null,
     token: null,
+    isInitialized: false,
 }
 
 const authSlice = createSlice(
@@ -32,17 +34,24 @@ const authSlice = createSlice(
                 state.isAuthenticated = true;
                 state.user = action.payload.user;
                 state.token = action.payload.token;
+                state.isInitialized = true;
 
             },
+
+            setInitialized: (state) => {
+                state.isInitialized = true;
+            },
+
 
             logout: (state) => {
                 state.isAuthenticated = false;
                 state.user = null;
                 state.token = null;
+                state.isInitialized = true;
             }
         }
     }
 );
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, logout, setInitialized } = authSlice.actions;
 export default authSlice.reducer;

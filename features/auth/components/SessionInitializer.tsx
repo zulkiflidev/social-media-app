@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { setCredentials } from "@/lib/redux/slices/authSlice";
+import { setCredentials, setInitialized } from "@/lib/redux/slices/authSlice";
 import { getToken, getUser } from "@/lib/auth/session";
 
 
@@ -20,6 +20,13 @@ export default function SessionInitializer() {
                 token, user
             }))
         }
+        else{
+
+            dispatch( setInitialized());
+        }
+
+
+
     }, [dispatch]);
 
     return null;
