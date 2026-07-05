@@ -57,13 +57,15 @@ function FeedContent() {
             {
                 hasNextPage && (
 
-                    <button onClick={
-                        () => {
-                            fetchNextPage();
-                        }
-                    } disabled={isFetchingNextPage}>
-                        {isFetchingNextPage ? 'Loading...' : 'Load More'}
-                    </button>
+                    <div className="flex justify-center items-center gap-2 mt-4">
+                        <button onClick={
+                            () => {
+                                fetchNextPage();
+                            }
+                        } disabled={isFetchingNextPage} className="text-[#7F51F9]">
+                            {isFetchingNextPage ? 'Loading...' : 'Load More'}
+                        </button>
+                    </div>
                 )
 
             }

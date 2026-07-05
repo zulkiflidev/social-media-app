@@ -12,6 +12,10 @@ import { loginSchema, type LoginFormValues } from '../schemas/authSchema';
 
 import useLogin  from "../hooks/useLogin";
 
+import Link from 'next/link';
+
+
+
 function LoginForm() {
 
   const form = useForm<LoginFormValues>({
@@ -46,7 +50,7 @@ function LoginForm() {
                         <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                         <Input {...field} id={field.name} 
                               type="email" aria-invalid={fieldState.invalid}
-                              placeholder="you@example.com" />
+                              placeholder="Enter your email" />
                         { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )
@@ -61,7 +65,7 @@ function LoginForm() {
                         <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                         <Input {...field} id={field.name} 
                               type="password" aria-invalid={fieldState.invalid}
-                              placeholder="••••••••" />
+                              placeholder="Enter your password" />
                         { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )
@@ -77,10 +81,17 @@ function LoginForm() {
             )
           }
           
-          <Button type="submit" className="w-full mt-4" disabled={isPending}>
+          <Button type="submit" className="w-full mt-4 bg-[#6936F2] text-white" disabled={isPending}>
             { isPending ? "Processing..." : "Login"}
-          </Button>
+          </Button>          
       </form>
+
+      <div className="mt-5 flex items-center justify-center gap-2 whitespace-nowrap w-full">
+        <p className="text-md"> Don't have an account? 
+          <Link href="/register"><span className="text-[#6936F2] hover:underline"> Register </span></Link> 
+        </p>
+      </div>
+
     </div>
   )
 }

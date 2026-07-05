@@ -12,6 +12,8 @@ import { registerSchema, type RegisterFormValues } from '../schemas/authSchema';
 
 import useRegister  from "../hooks/useRegister";
 
+import Link from 'next/link';
+
 
 function RegisterForm() {
   
@@ -48,7 +50,7 @@ function RegisterForm() {
                         <FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
                         <Input {...field} id={field.name} 
                               type="text" aria-invalid={fieldState.invalid}
-                              placeholder="John Doe" />
+                              placeholder="Enter your name" />
                         { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )
@@ -63,7 +65,7 @@ function RegisterForm() {
                         <FieldLabel htmlFor={field.name}>Username</FieldLabel>
                         <Input {...field} id={field.name} 
                               type="text" aria-invalid={fieldState.invalid}
-                              placeholder="John Doe" />
+                              placeholder="Enter your username" />
                         { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )
@@ -77,7 +79,7 @@ function RegisterForm() {
                         <FieldLabel htmlFor={field.name}>Email</FieldLabel>
                         <Input {...field} id={field.name} 
                               type="email" aria-invalid={fieldState.invalid}
-                              placeholder="you@example.com" />  
+                              placeholder="Enter your email" />  
                           { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )
@@ -92,7 +94,7 @@ function RegisterForm() {
                         <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                         <Input {...field} id={field.name} 
                               type="password" aria-invalid={fieldState.invalid}
-                              placeholder="••••••••" />
+                              placeholder="Enter your password" />
                         { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )
@@ -103,15 +105,23 @@ function RegisterForm() {
           {
             isError && (
               <p className="mt-2 text-sm text-red-500">
-                Registration Faield. Please try again.
+                Registration Failed. Please try again.
               </p>
             )
           }
 
-          <Button type="submit" className="w-full mt-4" disabled={isPending}>
+          <Button type="submit" className="w-full mt-4 bg-[#6936F2] text-white" disabled={isPending}>
             { isPending ? "Processing..." : "Register"}
           </Button>
       </form>
+
+      <div className="mt-5 flex items-center justify-center gap-2 whitespace-nowrap w-full">
+        <p className="text-md"> Already have an account? 
+          <Link href="/login"><span className="text-[#6936F2] hover:underline"> Login </span></Link> 
+        </p>
+      </div>
+
+
     </div>
 
   );

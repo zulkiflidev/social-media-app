@@ -13,5 +13,7 @@ export default function CreatePostPage() {
 
       
     </AuthGuard>
+
+    
   );
 }
