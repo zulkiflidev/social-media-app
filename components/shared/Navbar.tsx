@@ -8,6 +8,7 @@ import { logout } from "@/lib/redux/slices/authSlice";
 import { clearSession } from "@/lib/auth/session";
 import { Button } from "@/components/ui/button";
 
+import Image from "next/image";
 
 
 function Navbar(){
@@ -27,14 +28,26 @@ function Navbar(){
     }
 
     return (
-        <nav className="border-b px-4 py-3 flex items-center justify-between">
+        <nav className="border-b px-4 py-3 flex items-center justify-around">
             
             <Link href="/feed" className="font-bold text-lg">
                 Sociality
             </Link>
             
             <div className="flex items-center gap-4">
-                <Link href="/feed" className="text-sm">
+
+
+                {/* <Input
+                    value={inputValue}
+                    onChange={
+                        (e) => setInputValue(e.target.value)
+                    }
+                    placeholder="Cari username atau nama..."
+                /> */}
+
+                
+
+                {/* <Link href="/feed" className="text-sm">
                     Feed
                 </Link>
 
@@ -44,20 +57,27 @@ function Navbar(){
 
                 <Link href="/posts/create" className="text-sm">
                     + Post
-                </Link>                
+                </Link>                 */}
             </div>
 
 
             {
                 isAuthenticated ? (
                     <div className="flex items-center gap-4">
+                        
+                        <Image 
+                            className="rounded-full" 
+                            src={user?.avatarUrl || "/defaultAvatar.png"} 
+                            alt={user?.username || "User Avatar "} 
+                            width={32} height={32} />
+                        
                         <Link href="/me" className="text-sm font-medium">
                             {user?.name}
                         </Link>
 
-                        <Button variant="outline" size="sm" onClick={handleLogout}>
+                        {/* <Button variant="outline" size="sm" onClick={handleLogout}>
                             Logout
-                        </Button>
+                        </Button> */}
                     </div>
                     
                 ) : (

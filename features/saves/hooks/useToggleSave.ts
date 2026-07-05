@@ -46,7 +46,7 @@ function useToggleSave() {
                     updatePostInCache(oldData, postId, (post ) => (
                         {
                             ...post,
-                            saveByMe: !isCurrentlySaved
+                            savedByMe: !isCurrentlySaved
                         }
                     ))                
             );

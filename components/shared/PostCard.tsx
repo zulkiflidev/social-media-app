@@ -11,9 +11,18 @@ import { Button } from "@/components/ui/button";
 
 import useToggleSave from "@/features/saves/hooks/useToggleSave";
 
-
 import useDeletePost from "@/features/posts/hooks/useDeletePost";
 import { useAppSelector } from "@/lib/redux/hooks";
+
+import { Heart } from 'lucide-react';
+
+import { Bookmark } from 'lucide-react';
+import { MessageSquare, MessageCircle, MessageSquareMore } from 'lucide-react';
+
+import ExpandableText from "./ExpandableText";
+
+import LikesDialog from "@/features/likes/components/LikesDialog";
+
 
 dayjs.extend(relativeTime);
 
@@ -24,6 +33,7 @@ function PostCard({ post}: {  post: Post}) {
         toggleLike( {
             postId: post.id, 
             isCurrentlyLiked: post.likedByMe
+
         });
     }
 
@@ -32,6 +42,7 @@ function PostCard({ post}: {  post: Post}) {
         toggleSave({
             postId: post.id,
             isCurrentlySaved: post.savedByMe ?? false
+
         });
     }
 
@@ -41,6 +52,7 @@ function PostCard({ post}: {  post: Post}) {
     function handleDeleteClick() {
         if (confirm("Yakin ingin menghapus post ini?")) {
             deletePost(post.id);
+
         }
     }
 
@@ -51,24 +63,30 @@ function PostCard({ post}: {  post: Post}) {
                 <div className="w-8 h-8 rounded-full 
                                 bg-muted overflow-hidden relative">
 
-                    { post.author.avatarUrl && (
+                    { 
+                        post.author.avatarUrl && (
 
-                        <Image 
-                            src={post.author.avatarUrl} 
-                            alt={post.author.username} 
-                            fill
-                            sizes="32px"
-                            className="object-cover" />
+                            <Image 
+                                src={post.author.avatarUrl} 
+                                alt={post.author.username} 
+                                fill
+                                sizes="32px"
+                                className="object-cover" />
 
-                    )}
+                        )
+                    }
+
                 </div>
                 
                 <div >
-                    <Link href={`/users/${post.author.username}`} className="text-sm font-medium">
+                    <Link href={`/profile/${post.author.username}`} className="text-sm font-medium">
                         {post.author.username}
                     </Link>
+
                     <p className="text-xs text-muted-foreground">
-                        {dayjs(post.createdAt).fromNow()}
+                        {
+                            dayjs(post.createdAt).fromNow()
+                        }
                     </p>
                 </div>
             </div>
@@ -85,51 +103,91 @@ function PostCard({ post}: {  post: Post}) {
 
             </div>
 
-            <div className="p3 space=y-2">
+            <div className="p-3 space-y-2">
 
-                <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-2 text-sm">
+
                     {/* <span>{post.likeCount} like</span> */}
                     <Button onClick={handleLikeClick} disabled={isPending}
                             className={post.likedByMe 
                             ?
                             "text-red-500 font-medium" :
-                            "text-foreground"}>
-                        {post.likedByMe ? "♥" : "♡"} 
-                        {post.likeCount} like
+                            "text-foreground"}
+                            variant="ghost"
+                            >
+
+                        {
+                            post.likedByMe ? 
+                            <Heart className="!h-5 !w-5 text-red-500" fill="currentColor" /> : 
+                            <Heart className="!h-5 !w-5" />
+                    
+                        } 
+                        
+                        {post.likeCount} 
                     
                     </Button>
                                         
-                    <Link href={`/posts/${post.id}`} className="text-muted-foreground">
+                    {/* <Link href={`/posts/${post.id}`} className="text-muted-foreground">
                         {post.commentCount} comments
+                    </Link> */}
+                    
+                    <Link href={`/posts/${post.id}`} className="">
+                        
+                        <div className="flex gap-2 items-center">
+                            <MessageSquareMore className="h-5 w-5" /> {post.commentCount} 
+                        </div>
+
                     </Link>
 
                     <Button onClick={handleSaveClick} disabled={isSaveSaving}
-                            className={post.savedByMe 
-                            ?
-                            "text-red-500 font-medium ml-auto" : "text-foreground ml-auto"
+                            className=
+                            {
+                              post.savedByMe ?
+                                "text-red-500 font-medium ml-auto" : "text-foreground ml-auto"
                             }
-                    >
-                        {post.savedByMe ? "🔖" : "📑"}
+                            variant="ghost"
+                    >                        
+
+                        <Bookmark 
+                                size={30} 
+                                fill={post.savedByMe ? "currentColor" : "none"} 
+                                className={post.savedByMe ? "text-yellow-500 !h-5 !w-5" : "text-gray-500 !h-6 !w-6"}
+                                />
 
                     </Button>
                 
                 </div>
 
 
+                <div className="flex flex-col gap-1 pl-3">
+                    <p className="text-sm">
+                        <span className="text-md font-bold">{post.author.username}</span>{" "}
+                    </p>   
+                    {/* <p className="text-sm">{post.caption}</p> */}
+                    {/* <p className="text-sm line-clamp-2 hover:line-clamp-none cursor-pointer transition-all">
+                        {post.caption}
+                    </p>     */}
+                    <ExpandableText text={post.caption} />                
 
-                <p className="text-sm">
-                <span className="font-medium">{post.author.username}</span>{" "}
-                {post.caption}
+                </div>
 
-                </p>
+                <div className="flex gap-2 pl-3">
+                    {/* <p className="text-sm text-muted-foreground">{post.likeCount} like</p> */}
+                    <LikesDialog
+                            postId={post.id}
+                            likeCount={post.likeCount}
+                        />                    
+                </div>
+                
 
-                {
+                {/* {
                     currentUser?.id === post.author.id && (
                         <Button variant="ghost" size="sm" onClick={ handleDeleteClick } disabled={isDeleting}>
-                            Hapus
+                            Delete
                         </Button>
                     )
-                }                
+                }
+                */}
 
 
             </div>

@@ -2,6 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api/axios";
 import type { PublicProfile } from "@/features/users/types/profile";
 
+// import useToggleFollow from "@/features/follow/hooks/useToggleFollow";
+
+import type { LikesResponse } from "@/features/likes/types/likes";
+
 interface ToggleFollowParams {
   username: string;
   isCurrentlyFollowed: boolean;
@@ -10,6 +14,8 @@ interface ToggleFollowParams {
 
 function useToggleFollow() {
   const queryClient = useQueryClient();
+
+//   const { mutate: toggleFollow, isPending } = useToggleFollow();
 
   return useMutation({
 
@@ -59,6 +65,36 @@ function useToggleFollow() {
             
             });
 
+
+
+
+            queryClient.setQueriesData<LikesResponse>(
+                {
+                    queryKey: ["post-likes"],
+                },
+                (old) => {
+                    if (!old) return old;
+
+                    return {
+                        ...old,
+
+                        users: old.users.map((user) =>
+                            user.username === username
+                                ? {
+                                    ...user,
+                                    isFollowedByMe: !isCurrentlyFollowed,
+                                }
+                                : user
+                        ),
+
+
+                    };
+                    
+                }
+            );
+
+
+
             return { previousProfile };
         },
 
@@ -70,7 +106,14 @@ function useToggleFollow() {
         },
 
         onSettled: (_data, _error, { username }) => {
-            queryClient.invalidateQueries({ queryKey: ["profile", username] });
+            queryClient.invalidateQueries({ 
+                queryKey: ["profile", username] 
+            
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["post-likes"]
+            });            
         
         },
     });
