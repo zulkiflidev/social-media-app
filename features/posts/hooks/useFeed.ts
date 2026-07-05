@@ -13,6 +13,7 @@ function useFeed() {
                     data: FeedResponse;
                 }>("/feed", {
                     params: { page: pageParam, limit: 10}
+                    
                 });
 
                 return response.data.data;
