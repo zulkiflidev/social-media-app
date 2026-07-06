@@ -29,10 +29,17 @@ const registerSchema = z.object({
         message: "Invalid email address"
 
     }),
+
+    phone: z.string().min(6, {
+        message: "Phone number must be at least 6 characters long"
+    
+    }),
+
     password: z.string().min(6, {
         message: "Password must be at least 6 characters long"
     
     }),
+
 });
 
 export { loginSchema, registerSchema };

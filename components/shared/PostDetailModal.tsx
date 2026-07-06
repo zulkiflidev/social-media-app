@@ -78,7 +78,7 @@ function PostDetailModal({ post, open, onOpenChange }: PostDetailModalProps) {
         });
     }
 
-        const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
+    const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
     function handleSaveClick() {
         toggleSave({
             postId: post.id,

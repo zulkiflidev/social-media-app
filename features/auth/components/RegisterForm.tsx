@@ -24,6 +24,7 @@ function RegisterForm() {
         name: "",
         username: "",
         email: '',
+        phone: '',
         password: '',
       }, 
   });
@@ -85,6 +86,22 @@ function RegisterForm() {
                 )
               }    
             />  
+
+            <Controller name='phone' control={form.control} render={
+                (
+                  { field, fieldState}
+                ) =>(
+                    <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>Phone Number</FieldLabel>
+                        <Input {...field} id={field.name} 
+                              type="number" aria-invalid={fieldState.invalid}
+                              placeholder="Enter your phone number" />  
+                          { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                )
+              }    
+            />  
+
 
             <Controller name='password' control={form.control} render={
                 (

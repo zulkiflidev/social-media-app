@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,31 +17,46 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart } from "lucide-react";
 
 import FollowListDialog from "@/features/follow/components/FollowListDialog";
+import { useAppSelector } from "@/lib/redux/hooks";
 
-export default function ProfilePage() {
+import { useRouter } from "next/navigation";
+
+
+function MyProfilePage() {
   
-  const params = useParams<{ username: string }>();
+//   const params = useParams<{ username: string }>();
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const username = currentUser?.username ?? "";
 
-  const { data: profile, isLoading, isError } = usePublicProfile(params.username);
-  const { data: postsData, isLoading: postsLoading } = useUserPosts(params.username);
+
+  const { data: profile, isLoading, isError } = usePublicProfile(username);
+  const { data: postsData, isLoading: postsLoading } = useUserPosts(username);
   const { mutate: toggleFollow, isPending } = useToggleFollow();
-  const { data: likesData, isLoading: likesLoading } = useUserLikes(params.username);
+  const { data: likesData, isLoading: likesLoading } = useUserLikes(username);
 
   const userPosts = postsData?.pages.flatMap((page) => page.posts) ?? [];
   const userLikes = likesData?.pages.flatMap((page) => page.posts) ?? [];
 
-  
+  const router = useRouter();
 
   function handleFollowClick() {
     if (!profile) return;
     toggleFollow(
       { 
-        username: params.username, 
+        username: username, 
         isCurrentlyFollowed: profile.isFollowing 
       }
     );  
   
   }
+
+
+  function handleEditClick() {
+    if (!profile) return;
+
+    router.push("/profile/edit");
+  }
+
 
   if (isLoading) {
     return <div className="p-4 text-center">Loading...</div>;
@@ -87,21 +102,16 @@ export default function ProfilePage() {
           </div>
 
           <div>
-              {
-                !profile.isMe && (
-                  <Button onClick={handleFollowClick} disabled={isPending}
-                          variant={profile.isFollowing ? "outline" : "default"}                
+                <Button onClick={handleEditClick} disabled={isPending}
+                          variant="outline"
                           className="p-4"
                           size="lg"
                   >
 
-                    {profile.isFollowing ? <Check className="w-5 h-5" /> : ""}
-                    
-                    {profile.isFollowing ? "Following" : "Follow"}
+                    Edit Profile
                   
-                  </Button>
-                )
-              }
+                </Button>
+                
           </div>
 
       </div>
@@ -124,7 +134,7 @@ export default function ProfilePage() {
           </Link>
 
 
-          <FollowListDialog username={params.username} type="followers"> 
+          <FollowListDialog username={username} type="followers"> 
             <div className="flex flex-col gap-2 justify-center items-center">
               <p className="font-medium text-xl "><strong>{profile.counts.followers}</strong></p> 
               <p className="font-medium text-lg text-muted-foreground" >Follower</p>
@@ -132,7 +142,7 @@ export default function ProfilePage() {
           </FollowListDialog>
 
 
-          <FollowListDialog username={params.username} type="followers">
+          <FollowListDialog username={username} type="followers">
             <div className="flex flex-col gap-2 justify-center items-center">
               <p className="font-medium text-xl "><strong>{profile.counts.following}</strong></p> 
               <p className="font-medium text-lg text-muted-foreground" >Following</p>
@@ -239,3 +249,6 @@ export default function ProfilePage() {
 
   );
 }
+
+
+export default MyProfilePage;
