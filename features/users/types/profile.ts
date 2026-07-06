@@ -10,7 +10,7 @@ export interface PublicProfile {
     phone: string;
 
     counts: {
-        posts: number;
+        post: number;
         followers: number;
         following: number;
         likes: number;
