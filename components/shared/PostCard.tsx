@@ -10,18 +10,20 @@ import useToggleLike from "@/features/likes/hooks/useToggleLike";
 import { Button } from "@/components/ui/button";
 
 import useToggleSave from "@/features/saves/hooks/useToggleSave";
-
 import useDeletePost from "@/features/posts/hooks/useDeletePost";
 import { useAppSelector } from "@/lib/redux/hooks";
 
 import { Heart } from 'lucide-react';
-
 import { Bookmark } from 'lucide-react';
 import { MessageSquare, MessageCircle, MessageSquareMore } from 'lucide-react';
 
 import ExpandableText from "./ExpandableText";
-
 import LikesDialog from "@/features/likes/components/LikesDialog";
+
+
+import { useState } from "react";
+import PostDetailModal from "./PostDetailModal";
+
 
 
 dayjs.extend(relativeTime);
@@ -56,11 +58,13 @@ function PostCard({ post}: {  post: Post}) {
         }
     }
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
 
     return(
         <div className="border rounded-lg overflow-hidden">
-            <div className="flex items-center gap-3 p-3">
-                <div className="w-8 h-8 rounded-full 
+            <div className="flex items-center gap-3 p-6">
+                <div className="w-12 h-12 rounded-full 
                                 bg-muted overflow-hidden relative">
 
                     { 
@@ -90,16 +94,38 @@ function PostCard({ post}: {  post: Post}) {
                     </p>
                 </div>
             </div>
+            
+{/* 
+            <div className="relative w-full aspect-square bg-muted ">
 
-            <div className="relative w-full aspect-square bg-muted">
+                <Button variant="ghost" className="cursor-pointe  p-0 h-full w-full"
+                        onClick={() => setIsModalOpen(true)}>
+                    <Image 
+                        src={ post.imageUrl }
+                        alt={ post.caption }
+                        fill
+                        sizes="(max-width: 640px) 100vw, 512px"
+                        className="object-cover"
+                    />
 
-                <Image 
-                    src={ post.imageUrl }
-                    alt={ post.caption }
-                    fill
-                    sizes="(max-width: 640px) 100vw, 512px"
-                    className="object-cover"
-                />
+
+                </Button>
+
+            </div> */}
+
+
+            <div className="relative w-full aspect-square bg-muted ">
+                <Button variant="ghost" className="cursor-pointer p-0 h-full w-full" onClick={() => setIsModalOpen(true)}>
+                    <Image 
+                        src={ post.imageUrl }
+                        alt={ post.caption }
+                        fill
+                        sizes="(max-width: 640px) 100vw, 512px"
+                        className="object-cover"
+                    />
+                
+                </Button>
+
 
             </div>
 
@@ -189,12 +215,14 @@ function PostCard({ post}: {  post: Post}) {
                 }
                 */}
 
-
             </div>
             
+            <PostDetailModal
+                post={post}
+                open={isModalOpen}
+                onOpenChange={setIsModalOpen}
 
-
-
+            />
 
         </div>
     )

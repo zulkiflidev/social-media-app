@@ -1,10 +1,12 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, type InfiniteData } from "@tanstack/react-query";
+
 import api from "@/lib/api/axios";
 import type { PublicProfile } from "@/features/users/types/profile";
 
 // import useToggleFollow from "@/features/follow/hooks/useToggleFollow";
 
 import type { LikesResponse } from "@/features/likes/types/likes";
+import type { FollowListResponse } from "../types/follow";
 
 interface ToggleFollowParams {
   username: string;
@@ -93,8 +95,57 @@ function useToggleFollow() {
                 }
             );
 
+            //==
+            queryClient.setQueriesData<InfiniteData<FollowListResponse>>(
+            { 
+                queryKey: ["followers"] },
+                    (oldData) => {
+                        if (!oldData) return oldData;
+                        
+                        return {
+                            ...oldData,
+                            pages: oldData.pages.map((page) => ({
+                     
+                                ...page,
+                     
+                                users: page.users.map((user) =>
+                     
+                                    user.username === username
+                                    ? { ...user, isFollowedByMe: !isCurrentlyFollowed }
+                                    : user
+                                ),
+                     
+                     
+                        })),
+                    };
+                }
+            );
+
+            queryClient.setQueriesData<InfiniteData<FollowListResponse>>(
+            { 
+                queryKey: ["following"] },
+                    (oldData) => {
+                        if (!oldData) return oldData;
+
+                        return {
+                            ...oldData,
+
+                            pages: oldData.pages.map((page) => ({
+                                ...page,
+                                users: page.users.map((user) =>
+                                
+                                user.username === username
+                                    ? { ...user, isFollowedByMe: !isCurrentlyFollowed }
+                                    : user
+                            
+                            ),
 
 
+                        })),
+                    };
+            });
+
+            //==
             return { previousProfile };
         },
 

@@ -123,3 +123,16 @@
     @apply font-sans;
   }
 }
+
+
+@layer utilities {
+  .tab-underline-list {
+    @apply bg-transparent h-auto p-0 rounded-none border-b border-border;
+  }
+  
+  .tab-underline-trigger {
+    @apply flex items-center gap-2 rounded-none bg-transparent py-3 border-t-0 border-x-0 border-b-2 border-transparent text-muted-foreground transition-all;
+    @apply data-[state=active]:border-b-foreground data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none;
+    @apply focus-visible:ring-0 focus-visible:ring-offset-0;
+  }
+}

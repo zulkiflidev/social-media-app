@@ -17,6 +17,11 @@ import usePostLikes from "../hooks/usePostLikes";
 
 import useToggleFollow from "@/features/follow/hooks/useToggleFollow";
 import { Button } from "@/components/ui/button";
+import { Check, CheckCircle2, SquareCheck } from 'lucide-react';
+
+
+
+
 
 
 interface LikesDialogProps {
@@ -139,6 +144,9 @@ function LikesDialog({ postId, likeCount }: LikesDialogProps) {
                                                     }
                                                     className="cursor-pointer"
                                                 >
+
+                                                    {user.isFollowedByMe ? <Check className="w-5 h-5" /> : ""}
+
                                                     {user.isFollowedByMe ? "Following" : "Follow"}
                                                 </Button>
                                             )

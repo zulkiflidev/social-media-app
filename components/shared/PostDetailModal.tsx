@@ -1,19 +1,24 @@
 "use client";
 
-import AuthGuard from "@/components/shared/AuthGuard";
-import PostCard from "@/components/shared/PostCard";
-import usePost from "@/features/posts/hooks/usePost";
-import { useParams } from "next/navigation";
-
 import { useState, type FormEvent } from "react";
+import Image from "next/image";
+import type { Post } from "@/features/posts/types/post";
+
 import useComments from "@/features/comments/hooks/useComments";
 import useCreateComment from "@/features/comments/hooks/useCreateComment";
+import useDeleteComment from "@/features/comments/hooks/useDeleteComment";
 
+import { useAppSelector } from "@/lib/redux/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import useDeleteComment from "@/features/comments/hooks/useDeleteComment";
-import { useAppSelector } from "@/lib/redux/hooks";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
+
+import Link from "next/link";
+import dayjs from "dayjs";
 
 import { MessageSquare, MessageCircle, MessageSquareMore } from 'lucide-react';
 import { Heart } from 'lucide-react';
@@ -21,104 +26,80 @@ import { Bookmark } from 'lucide-react';
 import { Smile, Laugh } from 'lucide-react';
 import { Share2, ExternalLink, Share } from 'lucide-react';
 
-import Image from "next/image";
-import Link from "next/link";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-
 import useToggleLike from "@/features/likes/hooks/useToggleLike";
 import useToggleSave from "@/features/saves/hooks/useToggleSave";
 
 
-
-
-
-
-
-
-
-dayjs.extend(relativeTime);
-
-
-function PostDetailPage() {
-
-    return (
-        <AuthGuard>
-            <PostDetailContent />
-        </AuthGuard>
-    );
+interface PostDetailModalProps {
+  post: Post;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-
-function PostDetailContent() {
-
-    const params = useParams<{   id: string }>();
-    const postId = Number(params.id);
-    const { data: post, isLoading, isError} = usePost(postId);
-
-    const { data: commentsData, isLoading: commentsLoading } = useComments(postId);
+function PostDetailModal({ post, open, onOpenChange }: PostDetailModalProps) {
+    const { data: commentsData, isLoading: commentsLoading } = useComments(post.id);
     const { mutate: createComment, isPending: isCommenting } = useCreateComment();
-    
-    const [commentText, setCommentText] = useState('');
-    const comments = commentsData?.pages.flatMap( (page) => page.comments) ?? [];
-
 
     const { mutate: deleteComment } = useDeleteComment();
-    const currentUser = useAppSelector(
-        (state) => state.auth.user);
-    
-    function handleDeleteComment(commentId: number) {
+    const currentUser = useAppSelector((state) => state.auth.user);
 
-        deleteComment({
-            commentId, postId
+    const [commentText, setCommentText] = useState("");
+    const comments = commentsData?.pages.flatMap((page) => page.comments) ?? [];
+
+    function handleSubmitComment(e: FormEvent) {
+        e.preventDefault();
+        if (!commentText.trim()) return;
+
+        createComment(
+            { postId: post.id, text: commentText },
+            { onSuccess: () => setCommentText("") }
+        );
+
+
+    }
+
+    function handleDeleteComment(commentId: number) {
+        deleteComment({ 
+            commentId, 
+            postId: 
+            post.id 
+            
         });
 
     }
 
 
-    function handleSubmitComment( e: FormEvent) {
-        e.preventDefault();
+    const { mutate: toggleLike, isPending } = useToggleLike();
+    function handleLikeClick(){
+        toggleLike( {
+            postId: post.id, 
+            isCurrentlyLiked: post.likedByMe
 
-        if (!commentText.trim()) return;
-
-        createComment(
-            { postId, text: commentText },
-            { onSuccess: () => setCommentText('')}
-        );
+        });
     }
 
-    if (isLoading) {
-        return <div className="p-4 text-center">Loading...</div>;
-    
+    const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
+    function handleSaveClick() {
+        toggleSave({
+            postId: post.id,
+            isCurrentlySaved: post.savedByMe ?? false
+
+        });
     }
 
-    if (isError || !post){
-        return <div className="p-4 text-center text-red-500">Post is not found!</div>
-    }
 
 
-    // const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
-    // function handleSaveClick() {
-    //     toggleSave({
-    //         postId: postId,
-    //         isCurrentlySaved: false //post.savedByMe ?? false
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
 
-    //     });
-    // }    
+      {/* <DialogContent className="w-[95vw] max-w-6xl h-[90vh]  p-0"> */}
+        <DialogContent className="w-[95vw] max-w-6xl sm:max-w-6xl h-[90vh] p-0">
 
-
-
-    return(
-
-        <div className="max-w-6xl mx-auto p-4 mt-5 space-y-4 w-full">
-        
-
+            {/* <div className="grid w-full h-full min-h-0 grid-cols-1 md:grid-cols-[4fr_2fr] h-[80vh]">                        */}
             <div className="grid w-full h-full min-h-0 grid-cols-1 md:grid-cols-[4fr_2fr] grid-rows-[minmax(0,1fr)]">
 
                 {/* <div className="relative bg-black hidden md:block"> */}
-
-                {/* <div className="relative w-full h-full bg-black hidden items-start md:block">
+                <div className="relative w-full h-full bg-black hidden md:block">
                         <Image
                             src={post.imageUrl}
                             alt={post.caption}
@@ -128,11 +109,6 @@ function PostDetailContent() {
 
 
                         />
-                </div> 
-                */}
-
-                <div className="relative w-full aspect-square bg-black hidden md:block sticky top-4 self-start">
-                    <Image src={post.imageUrl} alt={post.caption} fill sizes="50vw" className="object-contain" />
                 </div>
 
                 <div className="flex flex-col h-full min-h-0 overflow-hidden">
@@ -276,7 +252,7 @@ function PostDetailContent() {
                                         "text-red-500 font-medium" :
                                         "text-foreground"}
                                         variant="ghost"
-                                        // onClick={ handleLikeClick }
+                                        onClick={ handleLikeClick }
                                         >
 
                                             {
@@ -294,12 +270,11 @@ function PostDetailContent() {
 
                                 <div className="flex gap-2 items-center">
                                     
-                                    <Button 
-                                            // onClick={handleSaveClick} disabled={isSaveSaving}
+                                    <Button onClick={handleSaveClick} disabled={isSaveSaving}
                                             className=
                                             {
-                                                post.savedByMe ?
-                                                    "text-red-500 font-medium ml-auto" : "text-foreground ml-auto"
+                                            post.savedByMe ?
+                                                "text-red-500 font-medium ml-auto" : "text-foreground ml-auto"
                                             }
                                             variant="ghost"
                                     >                        
@@ -346,14 +321,11 @@ function PostDetailContent() {
 
             </div>
 
-
-            
-
-        </div>
-    );
+        </DialogContent>
+    </Dialog>
 
 
-
+  );
 }
 
-export default PostDetailPage;
+export default PostDetailModal;
