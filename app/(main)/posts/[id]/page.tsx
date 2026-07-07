@@ -1,6 +1,7 @@
 "use client";
 
 import AuthGuard from "@/components/shared/AuthGuard";
+import { useQueryClient } from "@tanstack/react-query";
 import PostCard from "@/components/shared/PostCard";
 import usePost from "@/features/posts/hooks/usePost";
 import { useParams } from "next/navigation";
@@ -54,6 +55,7 @@ function PostDetailPage() {
 function PostDetailContent() {
 
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const params = useParams<{   id: string }>();
     const postId = Number(params.id);
@@ -79,6 +81,26 @@ function PostDetailContent() {
     }
 
 
+    const { mutate: toggleLike } = useToggleLike();
+    const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
+
+    function handleLikeClick() {
+        if (!post) return;
+        toggleLike({
+            postId: postId,
+            isCurrentlyLiked: post.likedByMe ?? false
+        }
+        
+            // ,{
+            //         onSuccess: () => {
+            //             queryClient.invalidateQueries({ queryKey: ['post', postId] });
+            //         }
+            // }
+        
+        );
+    }
+
+
     function handleSubmitComment( e: FormEvent) {
         e.preventDefault();
 
@@ -100,56 +122,42 @@ function PostDetailContent() {
     }
 
 
-    // const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
-    // function handleSaveClick() {
-    //     toggleSave({
-    //         postId: postId,
-    //         isCurrentlySaved: false //post.savedByMe ?? false
+    //const { mutate: toggleSave, isPending: isSaveSaving } = useToggleSave();
+    function handleSaveClick() {
+        toggleSave({
+            postId: postId,
+            isCurrentlySaved: false //post.savedByMe ?? false
 
-    //     });
-    // }    
+        });
+    }    
 
-
+  
 
     return(
 
-        <div className="max-w-6xl mx-auto p-4 mt-5 space-y-4 w-full">
+        <div className="max-w-6xl mx-auto md:p-4 md:mt-5 space-y-4 w-full">
 
 
             <div className="text-xl">
                 <Button onClick={() => router.back()} variant="ghost">
-                    <p className="text-xl font-medium">← Back</p>
+                    <p className="text-xl font-medium md:block hidden">← Back</p>
                 </Button> 
             </div>
 
-            <div className="grid w-full h-full min-h-0 grid-cols-1 md:grid-cols-[4fr_2fr] grid-rows-[minmax(0,1fr)]">
+            {/* <div className="grid w-full h-full min-h-0 grid-cols-1 md:grid-cols-[4fr_2fr] grid-rows-[minmax(0,1fr)]"> */}
+            <div className="grid grid-cols-1 md:grid-cols-[4fr_2fr] gap-x-6 md:h-[calc(100vh-160px)] items-start">
 
-                {/* <div className="relative bg-black hidden md:block"> */}
-
-                {/* <div className="relative w-full h-full bg-black hidden items-start md:block">
-                        <Image
-                            src={post.imageUrl}
-                            alt={post.caption}
-                            fill
-                            sizes="50vw"
-                            className="object-contain"
-
-
-                        />
-                </div> 
-                */}
-
-                <div className="relative w-full aspect-square bg-black hidden md:block sticky top-4 self-start">
-                    <Image src={post.imageUrl} alt={post.caption} fill sizes="50vw" className="object-contain" />
+                <div className="relative w-full aspect-square bg-black md:h-full md:sticky md:top-6">
+                    <Image src={post.imageUrl} alt={post.caption ?? "Post image"} fill sizes="50vw" className="object-contain" />
                 </div>
-
-                <div className="flex flex-col h-full min-h-0 overflow-hidden">
+  
+                <div className="flex flex-col md:h-full min-h-0 overflow-hidden">
                     <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3">
 
                         <div className="flex items-center gap-3 ">
                             <div className="w-12 h-12 rounded-full 
                                             bg-muted overflow-hidden relative">
-
+ 
                                 {  
                                     <Image 
                                         src={post.author.avatarUrl ? post.author.avatarUrl : "/defaultAvatar.png"} 
@@ -278,13 +286,13 @@ function PostDetailContent() {
                             <div className="flex flex-row items-center justify-between gap-2 w-full">
 
                                 <div className="flex gap-2 items-center">
-                                    <Button 
+                                    {/* <Button 
                                         className={post.likedByMe 
                                         ?
                                         "text-red-500 font-medium" :
                                         "text-foreground"}
                                         variant="ghost"
-                                        // onClick={ handleLikeClick }
+                                        onClick={ handleLikeClick }
                                         >
 
                                             {
@@ -293,8 +301,28 @@ function PostDetailContent() {
                                                 <Heart className="!h-5 !w-5" />                            
                                             }                                 
                                             {post.likeCount}                     
+                                    </Button> */}
+                                    
+                                    <Button 
+                                        
+                                        className="font-medium text-foreground" 
+                                        variant="ghost"
+                                        onClick={ handleLikeClick }
+                                    >
+                                        {
+                                            post.likedByMe ? (
+                                                
+                                                <Heart className="!h-5 !w-5 text-red-500 fill-red-500" /> 
+                                            ) : (
+                                                <Heart className="!h-5 !w-5 text-muted-foreground" />                            
+                                            )
+                                        }                             
+                                        <span className="ml-1">{post.likeCount}</span>                      
                                     </Button>
-                                                                                                        
+
+
+
+
                                     <div className="flex gap-2 items-center">
                                         <MessageSquareMore className="h-5 w-5" /> {post.commentCount} 
                                     </div>
