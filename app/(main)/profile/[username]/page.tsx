@@ -18,6 +18,10 @@ import { Heart } from "lucide-react";
 
 import FollowListDialog from "@/features/follow/components/FollowListDialog";
 
+import { Send } from 'lucide-react';
+
+
+
 export default function ProfilePage() {
   
   const params = useParams<{ username: string }>();
@@ -58,25 +62,21 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-4 w-full">
-      <div className="flex items-center gap-4 w-full justify-between">
-          
-          
+      
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4 w-full justify-between w-full">
+                    
           <div className="flex flex-row gap-2">
               <div className="w-20 h-20 rounded-full bg-muted overflow-hidden relative shrink-0">
 
-                {
-                  profile.avatarUrl && (
-
-                      <Image
-                        src={ profile.avatarUrl }
-                        alt={ profile.username }
-                        fill
-                        sizes="80px"
-                        className="object-cover"
-                      />
+                <Image
+                  src={ profile.avatarUrl ? profile.avatarUrl : "/defaultAvatar.png" }
+                  alt={ profile.username ? profile.username : "User Avatar" }
+                  fill
+                  sizes="80px"
+                  className="object-cover"
                   
-                  )}
-                  
+                />
+                                    
               </div>
 
               <div className="flex flex-col">
@@ -86,34 +86,38 @@ export default function ProfilePage() {
               </div>
           </div>
 
-          <div>
+          <div className="flex w-full md:justify-end">
               {
                 !profile.isMe && (
-                  <Button onClick={handleFollowClick} disabled={isPending}
-                          variant={profile.isFollowing ? "outline" : "default"}                
-                          className="p-4"
-                          size="lg"
-                  >
+                  <div className="flex gap-2 w-full items-center  md:justify-end">
+                    <Button onClick={handleFollowClick} disabled={isPending}
+                            variant={profile.isFollowing ? "outline" : "default"}                
+                            className="p-4 w-5/6  md:w-auto md:px-5 md:py-2 text-white rounded-full"
+                            size="lg"
+                    >
 
-                    {profile.isFollowing ? <Check className="w-5 h-5" /> : ""}
+                      {profile.isFollowing ? <Check className="w-5 h-5" /> : ""}
+                      
+                      {profile.isFollowing ? "Following" : "Follow"}
                     
-                    {profile.isFollowing ? "Following" : "Follow"}
-                  
-                  </Button>
+                    </Button>
+
+                    <Send size={20} strokeWidth={2} />
+                  </div>
                 )
               }
           </div>
 
-      </div>
+        </div>
 
-      {
+        {
+          
+          profile.bio && <p className="text-sm">{profile.bio}</p>
         
-        profile.bio && <p className="text-sm">{profile.bio}</p>
-      
-      }
+        }
 
 
-      <div className="flex gap-6 w-full justify-around">
+        <div className="flex gap-6 w-full justify-around">
 
 
           <Link href="#">
@@ -147,92 +151,92 @@ export default function ProfilePage() {
             
           </Link>
 
-      </div>
+        </div>
 
     
-      <Tabs defaultValue="posts" className="pt-4">
-        <TabsList className="grid w-full grid-cols-2 bg-transparent h-auto p-0 rounded-none ">
-          <TabsTrigger value="posts" className="tab-underline-trigger"> 
-                                                  
-              <Images className="w-5 h-5" /> Gallery 
+        <Tabs defaultValue="posts" className="pt-4">
+          <TabsList className="grid w-full grid-cols-2 bg-transparent h-auto p-0 rounded-none ">
+            <TabsTrigger value="posts" className="tab-underline-trigger"> 
+                                                    
+                <Images className="w-5 h-5" /> Gallery 
 
-          </TabsTrigger>
-          <TabsTrigger value="likes" className="tab-underline-trigger"> 
-                        
-              <Heart className="w-6 h-6"/>Liked 
-          </TabsTrigger>
+            </TabsTrigger>
+            <TabsTrigger value="likes" className="tab-underline-trigger"> 
+                          
+                <Heart className="w-6 h-6"/>Liked 
+            </TabsTrigger>
 
-        </TabsList>
+          </TabsList>
 
-        <TabsContent value="posts">
-          <div className="grid grid-cols-3 gap-1 pt-5">
-           
-            {
-              postsLoading && (
-                <p className="col-span-3 text-sm text-center text-muted-foreground">Loading...</p>
-              
-              )
-            }
+          <TabsContent value="posts">
+            <div className="grid grid-cols-3 gap-1 pt-5">
             
-            {
-              !postsLoading && userPosts.length === 0 && (
-                <p className="col-span-3 text-sm text-center text-muted-foreground">Not Post found</p>
-              )
-            }
-            
-            {
-              userPosts.map((post) => (
-                <Link key={post.id} href={`/posts/${post.id}`} className="relative aspect-square bg-muted">
-                  
-                  <Image src={post.imageUrl} alt={post.caption} fill 
-                         sizes="(max-width: 640px) 33vw, 200px" className="object-cover" 
-                         
-                         />
+              {
+                postsLoading && (
+                  <p className="col-span-3 text-sm text-center text-muted-foreground">Loading...</p>
                 
-                </Link>
-
-              ))
-            }
-          </div>
-        </TabsContent>
-
-        <TabsContent value="likes">
-          <div className="grid grid-cols-3 gap-1 pt-5">
-            
-            {
-              likesLoading && (
-                <p className="col-span-3 text-sm text-center text-muted-foreground">Loading...</p>
-              )
-            }
-
-            
-            {
-              !likesLoading && userLikes.length === 0 && (
-                <p className="col-span-3 text-sm text-center text-muted-foreground"> No liked posts </p>
-              )
-            }
-            
-            {
-              userLikes.map((post) => (
-                <Link key={post.id} href={`/posts/${post.id}`} 
-                      className="relative aspect-square bg-muted">
+                )
+              }
+              
+              {
+                !postsLoading && userPosts.length === 0 && (
+                  <p className="col-span-3 text-sm text-center text-muted-foreground pt-10">No Post found</p>
+                )
+              }
+              
+              {
+                userPosts.map((post) => (
+                  <Link key={post.id} href={`/posts/${post.id}`} className="relative aspect-square bg-muted">
+                    
+                    <Image src={post.imageUrl} alt={post.caption} fill 
+                          sizes="(max-width: 640px) 33vw, 200px" className="object-cover"  
+                          
+                          />
                   
-                        <Image src={post.imageUrl} alt={post.caption} fill 
-                          sizes="(max-width: 640px) 33vw, 200px" 
-                          className="object-cover" />
-                  
-                </Link>
+                  </Link>
+
+                ))
+              }
+            </div>
+          </TabsContent>
+
+          <TabsContent value="likes">
+            <div className="grid grid-cols-3 gap-1 pt-5">
+              
+              {
+                likesLoading && (
+                  <p className="col-span-3 text-sm text-center text-muted-foreground">Loading...</p>
+                )
+              }
+
+              
+              {
+                !likesLoading && userLikes.length === 0 && (
+                  <p className="col-span-3 text-sm text-center text-muted-foreground pt-10"> No liked posts </p>
+                )
+              }
+              
+              {
+                userLikes.map((post) => (
+                  <Link key={post.id} href={`/posts/${post.id}`} 
+                        className="relative aspect-square bg-muted">
+                    
+                          <Image src={post.imageUrl} alt={post.caption} fill 
+                            sizes="(max-width: 640px) 33vw, 200px" 
+                            className="object-cover" />
+                    
+                  </Link>
 
 
-              ))
-            }
-          
-          </div>
+                ))
+              }
+            
+            </div>
 
-        </TabsContent>
+          </TabsContent>
 
 
-      </Tabs>
+        </Tabs>
 
 
     </div>

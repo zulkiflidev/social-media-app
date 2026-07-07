@@ -9,12 +9,10 @@ import useUserPosts from "@/features/users/hooks/useUserPosts";
 
 import useToggleFollow from "@/features/follow/hooks/useToggleFollow";
 import { Button } from "@/components/ui/button";
-import { Check, CheckCircle2, SquareCheck } from 'lucide-react';
-import { Images, GalleryHorizontal } from 'lucide-react';
 
 import useUserLikes from "@/features/users/hooks/useUserLikes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart } from "lucide-react";
+
 
 import FollowListDialog from "@/features/follow/components/FollowListDialog";
 import { useAppSelector } from "@/lib/redux/hooks";
@@ -23,6 +21,10 @@ import { useRouter } from "next/navigation";
 import { Bookmark } from 'lucide-react';
 import  useSavedPosts  from "@/features/saves/hooks/useSavedPosts";
 
+import { Check, CheckCircle2, SquareCheck } from 'lucide-react';
+import { Images, GalleryHorizontal } from 'lucide-react';
+import { Heart } from "lucide-react";
+import { Send } from 'lucide-react';
 
 
 
@@ -70,6 +72,13 @@ function MyProfilePage() {
     router.push("/profile/edit");
   }
 
+  function handleUploadClick() {
+    if (!profile) return;
+
+    router.push("/posts/create");
+
+  }
+
 
   if (isLoading) {
     return <div className="p-4 text-center">Loading...</div>;
@@ -86,17 +95,16 @@ function MyProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-4 w-full">
-      <div className="flex flex-col md:flex-row items-center gap-4 w-full justify-between">
+        <div className="flex flex-col md:flex-row items-center gap-4 w-full justify-between">
           
           
           <div className="flex flex-row gap-2 w-full items-center">
               <div className="w-20 h-20 rounded-full bg-muted overflow-hidden relative shrink-0">
 
-                {
-                  profile.avatarUrl && (
+                
 
                       <Image
-                        src={ profile.avatarUrl }
+                        src={ profile.avatarUrl ? profile.avatarUrl : "/defaultAvatar.png"}
                         alt={ profile.username }
                         fill
                         sizes="80px"
@@ -104,7 +112,7 @@ function MyProfilePage() {
                         
                       />
                   
-                  )}
+                  
                   
               </div>
 
@@ -115,20 +123,23 @@ function MyProfilePage() {
               </div>
           </div>
 
-          <div className="w-full flex justify-start md:justify-end gap-4">
+          <div className="w-full flex justify-start md:justify-end gap-4 items-center">
+
                 <Button onClick={handleEditClick} disabled={isPending}
                           variant="ghost"
-                          className="p-4 text-white border-gray-800 border-2 rounded-full px-4 py-4"
+                          className="p-4 text-white border-gray-800 border-2 rounded-full px-4 py-4 w-5/6 md:w-1/3"
                           size="lg"
                   >
 
                     Edit Profile
                   
                 </Button>
-                
+
+                <Send size={20} strokeWidth={2} />
+
           </div>
 
-      </div>
+        </div>
 
       {
         
@@ -188,7 +199,7 @@ function MyProfilePage() {
         </TabsList>
 
         <TabsContent value="posts">
-          <div className="grid grid-cols-3 gap-1 pt-5">
+          <div className="grid grid-cols-3 gap-1 pt-5 relative">
            
             {
               postsLoading && (
@@ -199,7 +210,20 @@ function MyProfilePage() {
             
             {
               !postsLoading && userPosts.length === 0 && (
-                <p className="col-span-3 text-sm text-center text-muted-foreground">Not Post found</p>
+
+                <div className="absolute pt-10 pb-35" >
+                  <div className="flex flex-col items-center justify-center gap-4">
+                    <p className="col-span-3 text-xl text-center mt-5 font-bold">Your story starts here</p>
+                    <p className="text-muted-foreground text-sm text-center ">
+                      Share your first post and let the world see your moments,
+                      passions, and memories. Make this space truly yours.</p>
+
+                    <Button className="lef-1/2 right-1/2 mt-5 px-5 py-5" onClick={handleUploadClick}>
+                      Upload My First Post
+                    </Button>
+                  </div>
+                </div>
+
               )
             }
             
@@ -231,7 +255,8 @@ function MyProfilePage() {
             
             {
               !savedLoading && userLikes.length === 0 && (
-                <p className="col-span-3 text-sm text-center text-muted-foreground"> No saved posts </p>
+                
+                <p className="col-span-3 text-sm text-center text-muted-foreground pt-10 pb-35"> No saved posts </p>
               )
             }
             

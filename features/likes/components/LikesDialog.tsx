@@ -22,8 +22,6 @@ import { Check, CheckCircle2, SquareCheck } from 'lucide-react';
 
 
 
-
-
 interface LikesDialogProps {
     postId: number;
     likeCount: number;
@@ -70,7 +68,7 @@ function LikesDialog({ postId, likeCount }: LikesDialogProps) {
                 {
                     isError && (
                         <p className="text-sm text-center text-red-500 py-4">
-                            Gagal memuat data.
+                            Faild to load data...
                         </p>
                     )
                 }
@@ -80,7 +78,7 @@ function LikesDialog({ postId, likeCount }: LikesDialogProps) {
                         !isError &&
                         data?.users.length === 0 && (
                             <p className="text-sm text-center py-4 text-muted-foreground">
-                                Belum ada yang menyukai post ini.
+                                Nobody has liked this post yet.
                             </p>
                         )
                 }

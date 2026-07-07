@@ -97,14 +97,23 @@ function TimelineContent() {
             <div>
                 <Tabs defaultValue="feed" className="flex pt-4">
                     <TabsList className="grid w-full grid-cols-2 bg-transparent h-auto p-0 rounded-none ">
-                        <TabsTrigger value="feed" className=""> 
-                            <Home className="w-25 h-25" color="white" strokeWidth={2}/>
+                        
+                        <TabsTrigger 
+                            value="feed" 
+                            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-full"
+                        > 
+                            <Home className="w-6 h-6" color="white" strokeWidth={2}/>
                             <p className="text-white font-semibold"><span>Feed</span></p>                        
                         </TabsTrigger>
-                        <TabsTrigger value="explore" className=""> 
-                            <Compass className="w-25 h-25" color="white" strokeWidth={2}/>
+
+                        <TabsTrigger 
+                            value="explore" 
+                            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-full"
+                        > 
+                            <Compass className="w-6 h-6" color="white" strokeWidth={2}/>
                             <p className="text-white font-semibold"><span>Explore</span></p>                                
                         </TabsTrigger>
+
                     </TabsList>
 
                     <TabsContent value="feed">
@@ -193,7 +202,7 @@ function TimelineContent() {
                                 </div>
                             )
                         }
-
+  
                         {
                             postExplore.length === 0 && (
                                 <div className="flex flex-col justify-center items-center gap-2 mt-4 min-h-[300px]">            

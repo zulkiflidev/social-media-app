@@ -21,7 +21,7 @@ export default function FollowingPage() {
 
       {
         !isLoading && users.length === 0 && (
-            <p className="text-sm text-center text-muted-foreground">Belum ada followers.</p>
+            <p className="text-sm text-center text-muted-foreground">No Following.</p>
         )
       }
 
