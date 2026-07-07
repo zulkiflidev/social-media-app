@@ -26,6 +26,7 @@ function RegisterForm() {
         email: '',
         phone: '',
         password: '',
+        confirmPassword: '',
       }, 
   });
 
@@ -112,6 +113,21 @@ function RegisterForm() {
                         <Input {...field} id={field.name} 
                               type="password" aria-invalid={fieldState.invalid}
                               placeholder="Enter your password" />
+                        { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                )
+              }   
+            />
+
+            <Controller name='confirmPassword' control={form.control} render={
+                (
+                  { field, fieldState} 
+                ) =>(
+                    <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
+                        <Input {...field} id={field.name} 
+                              type="password" aria-invalid={fieldState.invalid}
+                              placeholder="Confirm your password" />
                         { fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )
