@@ -26,7 +26,7 @@ function MyLikesContent() {
   }
 
   if (isError) {
-    return <div className="p-4 text-center text-red-500">Gagal memuat post yang disukai.</div>;
+    return <div className="p-4 text-center text-red-500">Failed to load liked post...</div>;
   
   }
 
@@ -38,7 +38,7 @@ function MyLikesContent() {
       {
         posts.length === 0 && (
             <p className="text-sm text-center text-muted-foreground">
-            Belum ada post yang disukai.
+              There are no liked posts yet.
             </p>
         
         )

@@ -65,7 +65,7 @@ function PostDialog({ postId, likeCount }: PostDialogProps) {
                 {
                     isError && (
                         <p className="text-sm text-center text-red-500 py-4">
-                            Gagal memuat data.
+                           Failed to load data...
                         </p>
                     )
                 }
@@ -75,7 +75,7 @@ function PostDialog({ postId, likeCount }: PostDialogProps) {
                         !isError &&
                         data?.users.length === 0 && (
                             <p className="text-sm text-center py-4 text-muted-foreground">
-                                Belum ada yang menyukai post ini.
+                                Nobody has liked this post yet..
                             </p>
                         )
                 } */}

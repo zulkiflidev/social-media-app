@@ -30,7 +30,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import useToggleLike from "@/features/likes/hooks/useToggleLike";
 import useToggleSave from "@/features/saves/hooks/useToggleSave";
 
-
+import { useRouter } from "next/navigation";
 
 
 
@@ -52,6 +52,8 @@ function PostDetailPage() {
 
 
 function PostDetailContent() {
+
+    const router = useRouter();
 
     const params = useParams<{   id: string }>();
     const postId = Number(params.id);
@@ -112,7 +114,13 @@ function PostDetailContent() {
     return(
 
         <div className="max-w-6xl mx-auto p-4 mt-5 space-y-4 w-full">
-        
+
+
+            <div className="text-xl">
+                <Button onClick={() => router.back()} variant="ghost">
+                    <p className="text-xl font-medium">← Back</p>
+                </Button> 
+            </div>
 
             <div className="grid w-full h-full min-h-0 grid-cols-1 md:grid-cols-[4fr_2fr] grid-rows-[minmax(0,1fr)]">
 
