@@ -25,13 +25,13 @@ import { Input } from "@/components/ui/input";
 import useSearchUsers from "@/features/users/hooks/useSearchUsers"
 import { useState, useEffect, useRef } from "react";
 
-
+import useMe from "@/features/profile/hooks/useMe";
 
 function Navbar(){
 
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const { isAuthenticated, user } = useAppSelector(
+    const { isAuthenticated, user, user: reduxUser } = useAppSelector(
         (state) => state.auth
 
     );
@@ -51,6 +51,16 @@ function Navbar(){
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
 
+    //const { isAuthenticated, user: reduxUser } = useAppSelector((state) => state.auth);
+    const { data: me } = useMe(); 
+    const targetProfile = me?.profile || me?.data?.profile || me?.data || me;
+
+    const userDisplay = {
+        name: targetProfile?.name || reduxUser?.name,
+        username: targetProfile?.username || reduxUser?.username,
+        avatarUrl: targetProfile?.avatarUrl || reduxUser?.avatarUrl,
+    };
+
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -65,13 +75,13 @@ function Navbar(){
     }, [searchRef]);
 
     return (
-        <nav className="border-b px-4 py-3 flex items-center justify-around">
+        <nav className="border-b px-4 py-3 flex items-center justify-between md:justify-around">
             
             <Link href="/timeline" className="font-bold text-lg">
                 Sociality
             </Link>
             
-            <div className="relative flex-1 max-w-md items-center gap-4" ref={searchRef}>
+            <div className="hidden md:relative flex-1 max-w-md items-center gap-4" ref={searchRef}>
 
 
                 <Input
@@ -110,14 +120,18 @@ function Navbar(){
                                     >
                                         
                                         <Image
-                                            src={user.avatarUrl || "/defaultAvatar.png"}
+                                            // src={user.avatarUrl || "/defaultAvatar.png"}
+                                            src={userDisplay.avatarUrl || "/defaultAvatar.png"}
+
                                             alt={user.username}
                                             width={32}
                                             height={32}
                                             className="rounded-full"
                                         />
                                         
-                                        <span className="text-sm font-medium">{user.username}</span>
+                                        {/* <div className="hidden"> */}
+                                            <p><span className="text-sm font-medium"> {userDisplay.name} </span></p>
+                                        {/* </div> */}
 
                                     </Link>
                                 ))
@@ -153,7 +167,9 @@ function Navbar(){
                                     alt={user?.username || "User Avatar"} 
                                     width={32} height={32} />
 
-                                {user?.name}
+                                <div className="hidden md:block">
+                                    {user?.name}
+                                </div>
 
                             </Button>
 

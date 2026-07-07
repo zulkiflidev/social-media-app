@@ -86,10 +86,10 @@ function MyProfilePage() {
 
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-4 w-full">
-      <div className="flex items-center gap-4 w-full justify-between">
+      <div className="flex flex-col md:flex-row items-center gap-4 w-full justify-between">
           
           
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 w-full items-center">
               <div className="w-20 h-20 rounded-full bg-muted overflow-hidden relative shrink-0">
 
                 {
@@ -101,6 +101,7 @@ function MyProfilePage() {
                         fill
                         sizes="80px"
                         className="object-cover"
+                        
                       />
                   
                   )}
@@ -114,10 +115,10 @@ function MyProfilePage() {
               </div>
           </div>
 
-          <div>
+          <div className="w-full flex justify-start md:justify-end gap-4">
                 <Button onClick={handleEditClick} disabled={isPending}
-                          variant="outline"
-                          className="p-4"
+                          variant="ghost"
+                          className="p-4 text-white border-gray-800 border-2 rounded-full px-4 py-4"
                           size="lg"
                   >
 
@@ -155,7 +156,7 @@ function MyProfilePage() {
           </FollowListDialog>
 
 
-          <FollowListDialog username={username} type="followers">
+          <FollowListDialog username={username} type="following">
             <div className="flex flex-col gap-2 justify-center items-center">
               <p className="font-medium text-xl "><strong>{profile.counts.following}</strong></p> 
               <p className="font-medium text-lg text-muted-foreground" >Following</p>
