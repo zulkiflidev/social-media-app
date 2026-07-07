@@ -19,15 +19,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { User, CircleUser, LogOut } from 'lucide-react';
+import { Input } from "@/components/ui/input";
 
 
+import useSearchUsers from "@/features/users/hooks/useSearchUsers"
+import { useState, useEffect, useRef } from "react";
 
+import useMe from "@/features/profile/hooks/useMe";
 
 function Navbar(){
 
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const { isAuthenticated, user } = useAppSelector(
+    const { isAuthenticated, user, user: reduxUser } = useAppSelector(
         (state) => state.auth
 
     );
@@ -39,23 +43,102 @@ function Navbar(){
     
     }
 
+
+    const [inputValue, setInputValue] = useState("");
+    const { data: searchResult } = useSearchUsers(inputValue);
+    const users = searchResult?.users ?? [];
+
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const searchRef = useRef<HTMLDivElement>(null);
+
+    //const { isAuthenticated, user: reduxUser } = useAppSelector((state) => state.auth);
+    const { data: me } = useMe(); 
+    const targetProfile = me?.profile || me?.data?.profile || me?.data || me;
+
+    const userDisplay = {
+        name: targetProfile?.name || reduxUser?.name,
+        username: targetProfile?.username || reduxUser?.username,
+        avatarUrl: targetProfile?.avatarUrl || reduxUser?.avatarUrl,
+    };
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+                setIsSearchOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [searchRef]);
+
     return (
-        <nav className="border-b px-4 py-3 flex items-center justify-around">
+        <nav className="border-b px-4 py-3 flex items-center justify-between md:justify-around">
             
-            <Link href="/feed" className="font-bold text-lg">
+            <Link href="/timeline" className="font-bold text-lg">
                 Sociality
             </Link>
             
-            <div className="flex items-center gap-4">
+            <div className="hidden md:relative flex-1 max-w-md items-center gap-4" ref={searchRef}>
 
 
-                {/* <Input
+                <Input
                     value={inputValue}
                     onChange={
-                        (e) => setInputValue(e.target.value)
+                        (e) => {
+                            setInputValue(e.target.value);
+                            setIsSearchOpen(e.target.value.length > 0);
+                        }
                     }
-                    placeholder="Cari username atau nama..."
-                /> */}
+                    onFocus={() => {
+                        if (inputValue.length > 0) {
+                            setIsSearchOpen(true);
+                        }
+                    }}
+                    placeholder="Search..."
+                    className="w-full flex-1 focus:outline-none"
+                />
+
+                {
+                    isSearchOpen && users.length > 0 && (
+                        <div className="absolute top-full mt-2 w-full bg-background border rounded-lg shadow-lg z-50
+                                        max-h-80 overflow-y-auto">
+                            {
+                                users.map((user) => (
+                                    <Link
+                                        key={user.id}
+                                        href={`/profile/${user.username}`}
+                                        className="flex items-center gap-3 p-2 hover:bg-muted"
+                                        onClick={
+                                            () => {
+                                                setIsSearchOpen(false);
+                                                setInputValue("");
+                                            }
+                                        }
+                                    >
+                                        
+                                        <Image
+                                            // src={user.avatarUrl || "/defaultAvatar.png"}
+                                            src={userDisplay.avatarUrl || "/defaultAvatar.png"}
+
+                                            alt={user.username}
+                                            width={32}
+                                            height={32}
+                                            className="rounded-full"
+                                        />
+                                        
+                                        {/* <div className="hidden"> */}
+                                            <p><span className="text-sm font-medium"> {userDisplay.name} </span></p>
+                                        {/* </div> */}
+
+                                    </Link>
+                                ))
+                            }
+                        </div>
+                    )
+                }
 
                                 
             </div>
@@ -84,7 +167,9 @@ function Navbar(){
                                     alt={user?.username || "User Avatar"} 
                                     width={32} height={32} />
 
-                                {user?.name}
+                                <div className="hidden md:block">
+                                    {user?.name}
+                                </div>
 
                             </Button>
 

@@ -35,7 +35,7 @@ function useDeletePost() {
             };
       });
 
-      router.push("/feed");
+      router.push("/timeline");
     },
   });
 }

@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { Label } from '@/components/ui/label';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import bgImage from '@/public/Gradient.png';
 
 
 function LoginPage() {
@@ -15,6 +15,19 @@ function LoginPage() {
      
 
       <div className="flex min-h-screen items-center justify-center p-4">
+
+
+          <Image
+                  src={bgImage}
+                  alt="Background Image"
+                  placeholder="blur" 
+                  quality={100}       
+                  fill                
+                  sizes="100vw"       
+                  className="object-cover -z-10" 
+          />
+
+
          <div className="w-full md:w-1/3 max-w-sw">
 
             <div className="flex flex-row gap-2 items-center justify-center mb-6">

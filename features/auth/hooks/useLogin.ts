@@ -28,7 +28,7 @@ function useLogin() {
                 user: data.user
             }));
             const returnTo = searchParams.get("returnTo");
-            router.push(returnTo || "/feed");
+            router.push(returnTo || "/timeline");
             
         }
 

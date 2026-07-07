@@ -39,7 +39,7 @@ function RegisterForm() {
 
   
   return (
-    <div>
+    // <div className="">
       <form onSubmit={form.handleSubmit(onSubmit)}>
 
         <FieldGroup>
@@ -130,16 +130,19 @@ function RegisterForm() {
           <Button type="submit" className="w-full mt-4 bg-[#6936F2] text-white" disabled={isPending}>
             { isPending ? "Processing..." : "Register"}
           </Button>
+
+          <div className="mt-5 flex items-center justify-center gap-2 whitespace-nowrap w-full">
+            <p className="text-md"> Already have an account? 
+              <Link href="/login"><span className="text-[#6936F2] hover:underline"> Login </span></Link> 
+            </p>
+          </div>
+
+
       </form>
 
-      <div className="mt-5 flex items-center justify-center gap-2 whitespace-nowrap w-full">
-        <p className="text-md"> Already have an account? 
-          <Link href="/login"><span className="text-[#6936F2] hover:underline"> Login </span></Link> 
-        </p>
-      </div>
 
 
-    </div>
+    // </div>
 
   );
 }

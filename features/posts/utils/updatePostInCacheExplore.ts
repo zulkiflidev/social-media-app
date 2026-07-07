@@ -1,13 +1,13 @@
 import type { InfiniteData } from "@tanstack/react-query";
-import type { FeedResponse, Post } from "../types/post";
+import type { ExploreResponse, Post } from "../types/post";
 
 
 
 function updatePostInCache(
-    oldData: InfiniteData<FeedResponse> | undefined,
+    oldData: InfiniteData<ExploreResponse> | undefined,
     postId: number,
     updater: (post: Post) => Post
-): InfiniteData<FeedResponse> | undefined 
+): InfiniteData<ExploreResponse> | undefined 
     {
 
         if (!oldData) return oldData;
@@ -18,7 +18,7 @@ function updatePostInCache(
             (page) => (
                 {
                     ...page,
-                    items: page.items.map( (post) => (
+                    items: page.posts.map( (post) => (
                             post.id === postId ? updater(post) : post
                         )
                     )

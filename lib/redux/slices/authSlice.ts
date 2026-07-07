@@ -42,6 +42,13 @@ const authSlice = createSlice(
                 state.isInitialized = true;
             },
 
+            // supaya klo ada data update di profil, di tempat lain ikut update...
+            updateUserSuccess: (state, action: PayloadAction<Partial<User>>) => {
+                if (state.user) {
+                    state.user = { ...state.user, ...action.payload };
+                }
+            },
+
 
             logout: (state) => {
                 state.isAuthenticated = false;
@@ -53,5 +60,5 @@ const authSlice = createSlice(
     }
 );
 
-export const { setCredentials, logout, setInitialized } = authSlice.actions;
+export const { setCredentials, logout, setInitialized, updateUserSuccess } = authSlice.actions;
 export default authSlice.reducer;

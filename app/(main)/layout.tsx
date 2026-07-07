@@ -1,3 +1,4 @@
+import BottomNavBar from "@/components/shared/BottomNavbar";
 import Navbar from "@/components/shared/Navbar";
 
 
@@ -15,6 +16,8 @@ export default function MainLayout({
         {children}
 
       </main>
+      <BottomNavBar />  
+
     </>
   );
 }

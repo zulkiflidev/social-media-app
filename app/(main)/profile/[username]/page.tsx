@@ -132,7 +132,7 @@ export default function ProfilePage() {
           </FollowListDialog>
 
 
-          <FollowListDialog username={params.username} type="followers">
+          <FollowListDialog username={params.username} type="following">
             <div className="flex flex-col gap-2 justify-center items-center">
               <p className="font-medium text-xl "><strong>{profile.counts.following}</strong></p> 
               <p className="font-medium text-lg text-muted-foreground" >Following</p>
@@ -144,6 +144,7 @@ export default function ProfilePage() {
               <p className="font-medium text-xl "><strong>{profile.counts.likes}</strong></p> 
               <p className="font-medium text-lg text-muted-foreground" >Likes</p>
             </div>
+            
           </Link>
 
       </div>
