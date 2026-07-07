@@ -1,16 +1,19 @@
+import { redirect } from 'next/navigation';
+
 
 export default function HomePage() {
 
+    redirect('/login');
 
     return (
         <div className="flex-1 flex flex-col items-center justify-center p-8">
             
             <h1 className="text-4xl font-bold tracking-tight">
-                Selamat Datang di Aplikasi Kami
+               Welcome to Sociality 
             </h1>
 
             <p className="mt-2 text-muted-foreground">
-                Halaman ini otomatis menggunakan Navbar karena berada di dalam grup (main).
+               Please Login or Register...
             </p>
         </div>
 

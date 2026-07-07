@@ -28,7 +28,7 @@ function useRegister() {
                     token: data.token,
                     user: data.user
                 }));
-                router.push("/feed")
+                router.push("/timeline")
             }
 
         }       

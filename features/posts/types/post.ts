@@ -33,4 +33,9 @@ export  interface FeedResponse {
 
 }
 
+export  interface ExploreResponse {
+    posts: Post[];
+    pagination: PaginationMeta;
+
+}
 

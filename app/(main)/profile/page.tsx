@@ -20,6 +20,12 @@ import FollowListDialog from "@/features/follow/components/FollowListDialog";
 import { useAppSelector } from "@/lib/redux/hooks";
 
 import { useRouter } from "next/navigation";
+import { Bookmark } from 'lucide-react';
+import  useSavedPosts  from "@/features/saves/hooks/useSavedPosts";
+
+
+
+
 
 
 function MyProfilePage() {
@@ -31,12 +37,19 @@ function MyProfilePage() {
 
   const { data: profile, isLoading, isError } = usePublicProfile(username);
   const { data: postsData, isLoading: postsLoading } = useUserPosts(username);
+  
   const { mutate: toggleFollow, isPending } = useToggleFollow();
   const { data: likesData, isLoading: likesLoading } = useUserLikes(username);
 
+  const { data: savedData, isLoading: savedLoading } = useSavedPosts();
+
+//==
+
   const userPosts = postsData?.pages.flatMap((page) => page.posts) ?? [];
   const userLikes = likesData?.pages.flatMap((page) => page.posts) ?? [];
+  const userSaved = savedData?.pages.flatMap((page) => page.posts) ?? [];
 
+  
   const router = useRouter();
 
   function handleFollowClick() {
@@ -166,9 +179,9 @@ function MyProfilePage() {
               <Images className="w-5 h-5" /> Gallery 
 
           </TabsTrigger>
-          <TabsTrigger value="likes" className="tab-underline-trigger"> 
+          <TabsTrigger value="saved" className="tab-underline-trigger"> 
                         
-              <Heart className="w-6 h-6"/>Liked 
+              <Bookmark className="w-6 h-6"/> Saved 
           </TabsTrigger>
 
         </TabsList>
@@ -205,24 +218,24 @@ function MyProfilePage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="likes">
+        <TabsContent value="saved">
           <div className="grid grid-cols-3 gap-1 pt-5">
             
             {
-              likesLoading && (
+              savedLoading && (
                 <p className="col-span-3 text-sm text-center text-muted-foreground">Loading...</p>
               )
             }
 
             
             {
-              !likesLoading && userLikes.length === 0 && (
-                <p className="col-span-3 text-sm text-center text-muted-foreground"> No liked posts </p>
+              !savedLoading && userLikes.length === 0 && (
+                <p className="col-span-3 text-sm text-center text-muted-foreground"> No saved posts </p>
               )
             }
             
             {
-              userLikes.map((post) => (
+              userSaved.map((post) => (
                 <Link key={post.id} href={`/posts/${post.id}`} 
                       className="relative aspect-square bg-muted">
                   

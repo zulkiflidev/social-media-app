@@ -49,7 +49,7 @@ function useCreatePost() {
 
       });
 
-      router.push("/feed");
+      router.push("/timeline");
     },
 
     

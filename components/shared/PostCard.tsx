@@ -57,27 +57,28 @@ function PostCard({ post}: {  post: Post}) {
 
         }
     }
-
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-
     return(
-        <div className="border rounded-lg overflow-hidden">
+        <div className="border rounded-lg overflow-hidden my-10">
             <div className="flex items-center gap-3 p-6">
                 <div className="w-12 h-12 rounded-full 
                                 bg-muted overflow-hidden relative">
 
                     { 
-                        post.author.avatarUrl && (
+                        // post.author.avatarUrl && (
 
                             <Image 
-                                src={post.author.avatarUrl} 
+                                src={post.author.avatarUrl ? post.author.avatarUrl : "/defaultAvatar.png"} 
+                                // src="/defaultAvatar.png"
+
                                 alt={post.author.username} 
                                 fill
                                 sizes="32px"
                                 className="object-cover" />
 
-                        )
+                        // )
                     }
 
                 </div>
@@ -114,11 +115,11 @@ function PostCard({ post}: {  post: Post}) {
             </div> */}
 
 
-            <div className="relative w-full aspect-square bg-muted ">
+            <div className="relative w-full aspect-square bg-muted">
                 <Button variant="ghost" className="cursor-pointer p-0 h-full w-full" onClick={() => setIsModalOpen(true)}>
                     <Image 
                         src={ post.imageUrl }
-                        alt={ post.caption }
+                        alt={ post.caption ? post.caption : "Post Image"}
                         fill
                         sizes="(max-width: 640px) 100vw, 512px"
                         className="object-cover"
