@@ -12,9 +12,14 @@ interface ToggleLikeParams {
     isCurrentlyLiked: boolean;
 }
 
+
+
+
 function useToggleLike(){
 
     const queryClient = useQueryClient();
+
+    // type SinglePost = FeedResponse['posts'][number];
 
     return useMutation(
         {
@@ -30,16 +35,26 @@ function useToggleLike(){
 
             },
 
+            
             onMutate: async (
                 {postId, isCurrentlyLiked }
             ) => {
 
                 await queryClient.cancelQueries({ queryKey: ['feed']});
                 await queryClient.cancelQueries({ queryKey: ['explore']});
+                await queryClient.cancelQueries({ queryKey: ['post', postId]});
 
                 const previousFeed = queryClient.getQueryData<InfiniteData<FeedResponse>>(['feed']);
-                const previousExplore = queryClient.getQueryData<InfiniteData<FeedResponse>>(['explore']);
-                
+                const previousExplore = queryClient.getQueryData<InfiniteData<ExploreResponse>>(['explore']);
+                //const previousPostDetail = queryClient.getQueryData<InfiniteData<FeedResponse>>(['post', postId]); 
+
+                const previousPostDetail = queryClient.getQueryData<{
+                    id: number;
+                    likedByMe: boolean;
+                    likeCount: number;
+
+                } & Record<string, unknown>>(['post', postId]);
+
                 if (previousFeed){   
                     queryClient.setQueryData<InfiniteData<FeedResponse>>(
                         ['feed'],
@@ -64,23 +79,41 @@ function useToggleLike(){
                 
                 }
 
-                return {previousFeed, previousExplore};
+                if (previousPostDetail) {
+                    queryClient.setQueryData<typeof previousPostDetail>(
+                        ['post', postId],
+                        (oldPost) => {
+                            if (!oldPost) return oldPost;
+                            return {
+                                ...oldPost,
+                                likedByMe: !isCurrentlyLiked,
+                                likeCount: isCurrentlyLiked ? oldPost.likeCount - 1 : oldPost.likeCount + 1,
+                            };
+                        }
+                    );
+                }
+
+                return {previousFeed, previousExplore, previousPostDetail};
                 
             },
 
-            onError: ( _err, _variables, context) => {
+            onError: ( _err, variables, context) => {
             
                 if (context?.previousFeed){
                     queryClient.setQueryData(['feed'], context.previousFeed);
                 }
 
                 if (context?.previousExplore){
-                    queryClient.setQueryData(['feed'], context.previousExplore);
+                    queryClient.setQueryData(['explore'], context.previousExplore);
+                }
+
+                if (context?.previousPostDetail){
+                    queryClient.setQueryData(['post', variables.postId], context.previousPostDetail);
                 }
 
             },
 
-            onSettled: () => {
+            onSettled: (_data, _error, variables) => {
 
                 queryClient.invalidateQueries({
                     queryKey: ['feed']
@@ -89,6 +122,10 @@ function useToggleLike(){
                 queryClient.invalidateQueries({
                     queryKey: ['explore']
                 })
+
+                setTimeout(() => {
+                    queryClient.invalidateQueries({ queryKey: ['post', variables.postId] });
+                }, 500);
             }
 
 
